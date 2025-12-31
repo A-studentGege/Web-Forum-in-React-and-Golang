@@ -1,15 +1,22 @@
 import NavBar from "../components/common/NavBar";
 import TopicBar from "../components/common/TopicBar";
 import Footer from "../components/common/Footer";
+import CreatePostForm from "../components/CreatePostForm";
 
 import Grid from "@mui/material/Grid";
 
 import React from "react";
-import CreatePostForm from "../components/CreatePostForm";
 
 export default function CreatePostPage() {
   return (
-    <Grid container spacing={2} sx={{ px: 2 }}>
+    <Grid
+      container
+      spacing={2}
+      sx={{
+        px: 2,
+        minHeight: "100vh",
+      }}
+    >
       <Grid item xs={12}>
         <NavBar />
       </Grid>
@@ -21,7 +28,10 @@ export default function CreatePostPage() {
         <CreatePostForm />
       </Grid>
 
-      <Grid item xs={12}>
+      {/* Spacer */}
+      <Grid item xs={12} sx={{ flexGrow: 1 }} />
+
+      <Grid item xs={12} sx={{ mt: "auto" }}>
         <Footer />
       </Grid>
     </Grid>

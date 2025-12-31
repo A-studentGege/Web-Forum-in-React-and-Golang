@@ -1,3 +1,5 @@
+import Topic from "../types/Topic";
+
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
@@ -14,11 +16,45 @@ import SendIcon from "@mui/icons-material/Send";
 
 import React from "react";
 
+const topics: Topic[] = [
+  { id: 1, name: "Academic" },
+  { id: 2, name: "Technology" },
+  { id: 3, name: "Anime" },
+  { id: 4, name: "Gaming" },
+  { id: 5, name: "Cybersecurity" },
+  { id: 6, name: "Programming" },
+  { id: 7, name: "Cooking" },
+  { id: 8, name: "Science" },
+  { id: 9, name: "Mathematics" },
+  { id: 10, name: "Design" },
+  { id: 11, name: "Finance" },
+  { id: 12, name: "Health" },
+  { id: 13, name: "Travel" },
+  { id: 14, name: "Music" },
+  { id: 15, name: "Movies" },
+  { id: 16, name: "Literature" },
+  { id: 17, name: "Philosophy" },
+  { id: 18, name: "Startups" },
+  { id: 19, name: "Arts" },
+  { id: 20, name: "Pets" },
+];
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 200,
+    },
+  },
+};
+
 export default function CreatePostForm() {
-  const [age, setAge] = React.useState("");
+  const [topicID, setTopicID] = React.useState("");
 
   const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value);
+    setTopicID(event.target.value);
   };
 
   return (
@@ -36,20 +72,20 @@ export default function CreatePostForm() {
             <Select
               labelId="demo-simple-select-standard-label"
               id="demo-simple-select-standard"
-              value={age}
+              value={topicID}
               onChange={handleChange}
               label="Topic"
+              MenuProps={MenuProps}
             >
-              <MenuItem value={1}>{"Academic"}</MenuItem>
-              <MenuItem value={2}>{"Technology"}</MenuItem>
-              <MenuItem value={3}>{"Relationship"}</MenuItem>
+              {topics.map((topic) => (
+                <MenuItem value={topic.id}> {topic.name} </MenuItem>
+              ))}
             </Select>
           </FormControl>
 
           <TextField
             required
             fullWidth
-            id="standard-required"
             label="Title"
             placeholder="Pls make sure your post is relevant to the topic"
             variant="standard"

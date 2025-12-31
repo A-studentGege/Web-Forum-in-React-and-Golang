@@ -42,7 +42,7 @@ const topics: Topic[] = [
   { id: 17, name: "Philosophy" },
   { id: 18, name: "Startups" },
   { id: 19, name: "Arts" },
-  { id: 20, name: "My Pets" },
+  { id: 20, name: "Pets" },
 ];
 
 export default function TopicBar() {

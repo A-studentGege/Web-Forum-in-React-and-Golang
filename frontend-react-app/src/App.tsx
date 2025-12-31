@@ -6,6 +6,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import HomePage from "./pages/MainPage";
 import ViewPostPage from "./pages/ViewPostPage";
 import CreatePostPage from "./pages/CreatePostPage";
+import LoginPage from "./pages/LoginPage";
 
 const theme = createTheme({
   // palette: {
@@ -29,6 +30,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/post/1" element={<ViewPostPage />} />
             <Route path="/create" element={<CreatePostPage />} />
+            <Route path="/login" element={<LoginPage />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

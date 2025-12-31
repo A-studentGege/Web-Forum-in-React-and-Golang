@@ -12,7 +12,7 @@ import React from "react";
 
 export default function ViewPostPage() {
   return (
-    <Grid container spacing={2} sx={{ px: 2 }}>
+    <Grid container spacing={2} sx={{ px: 2, minHeight: "100vh" }}>
       <Grid item xs={12}>
         <NavBar />
       </Grid>
@@ -28,7 +28,10 @@ export default function ViewPostPage() {
         </Stack>
       </Grid>
 
-      <Grid item xs={12}>
+      {/* Spacer */}
+      <Grid item xs={12} sx={{ flexGrow: 1 }} />
+
+      <Grid item xs={12} sx={{ mt: "auto" }}>
         <Footer />
       </Grid>
     </Grid>

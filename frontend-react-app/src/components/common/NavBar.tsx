@@ -2,6 +2,7 @@ import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
+import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
@@ -30,9 +31,12 @@ export default function NavBar() {
     >
       <Stack direction={"row"} justifyContent={"space-between"} flexGrow={1}>
         <Stack direction={"row"} spacing={1} width={0.4} alignItems={"center"}>
-          <Typography variant="h6" noWrap sx={{ display: "flex", px: 1 }}>
-            {"*Project Forum*"}
-          </Typography>
+          {/* clickable title send user back to home page */}
+          <Link href="/" underline="hover" color="inherit">
+            <Typography variant="h6" noWrap sx={{ px: 1 }}>
+              {"*Project Forum*"}
+            </Typography>
+          </Link>
 
           <Divider orientation="vertical" flexItem />
 
@@ -50,8 +54,13 @@ export default function NavBar() {
             {"Create"}
           </Button>
 
-          <Button variant="text" color="inherit" endIcon={<AccountBoxIcon />}>
-            {"Profile"}
+          <Button
+            variant="text"
+            color="inherit"
+            href="/login"
+            endIcon={<AccountBoxIcon />}
+          >
+            {"Login"}
           </Button>
         </Stack>
       </Stack>
