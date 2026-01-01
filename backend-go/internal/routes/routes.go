@@ -17,11 +17,13 @@ func SetupRoutes() *chi.Mux {
 	})
 
 	r.Route("/topics", func (r chi.Router){
-		r.Get("/", handlers.GetTopics)
+		r.Get("/", handlers.GetTopics) // retrieve all topic names
+		r.Get("/{topicID}", handlers.GetTopicNameByID) // get topic name by its id
 	})
 
 	r.Route("/posts", func (r chi.Router){
-		r.Get("/", handlers.GetLatestPosts)
+		r.Get("/", handlers.GetLatestPosts) // get all posts order by time
+		r.Get("/topic/{topicID}", handlers.GetPostsByTopicID) // get posts filtered by topic
 	})
 
 	return r

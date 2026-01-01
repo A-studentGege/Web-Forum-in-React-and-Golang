@@ -4,31 +4,34 @@ import PostListItem from "./ForumPostListItem";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 
-import React, { useState, useEffect } from "react";
+type Props = {
+  posts: Post[];
+  title?: string;
+};
 
-export default function PostList() {
-  const [posts, setPosts] = useState<Post[]>([]);
+export default function PostList({ posts, title = "Posts" }: Props) {
+  if (posts === null) {
+    return (
+      <Card variant="outlined" sx={{ textAlign: "left", p: 3 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          {title}
+        </Typography>
 
-  // fetch posts from db
-  useEffect(() => {
-    fetch("http://localhost:8080/posts")
-      .then((res) => res.json())
-      .then((data) => {
-        setPosts(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
+        <Typography variant="body2" color="text.secondary">
+          {"No posts yet... Be the first to post!"}
+        </Typography>
+      </Card>
+    );
+  }
 
   return (
     <Card variant="outlined" sx={{ textAlign: "left", p: 3 }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Latest
+        {title}
       </Typography>
 
       {posts.map((post) => (
-        <PostListItem key={post.title} post={post} />
+        <PostListItem key={post.id} post={post} />
       ))}
     </Card>
   );

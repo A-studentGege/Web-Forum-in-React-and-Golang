@@ -7,6 +7,7 @@ import HomePage from "./pages/MainPage";
 import ViewPostPage from "./pages/ViewPostPage";
 import CreatePostPage from "./pages/CreatePostPage";
 import LoginPage from "./pages/LoginPage";
+import ViewPostByTopicPage from "./pages/ViewPostByTopicPage";
 
 const theme = createTheme({
   // palette: {
@@ -28,8 +29,9 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/post/:postid" element={<ViewPostPage />} />{" "}
+            <Route path="/post/:postid" element={<ViewPostPage />} />
             {/*pass in post ID to render view page */}
+            <Route path="/topic/:topicID" element={<ViewPostByTopicPage />} />
             <Route path="/create" element={<CreatePostPage />} />
             <Route path="/login" element={<LoginPage />} />
           </Routes>

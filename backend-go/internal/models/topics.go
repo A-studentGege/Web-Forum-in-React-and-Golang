@@ -30,9 +30,9 @@ func GetAllTopics() ([]Topic, error) {
 	return topics, nil
 }
 
-func GetTopicByID(id int) (*Topic, error) {
+func GetTopicNameByID(id int) (*Topic, error) {
 	row := db.DB.QueryRow(
-		"SELECT id, Topicname FROM Topics WHERE id = $1",
+		"SELECT id, name FROM Topics WHERE id = $1",
 		id,
 	)
 

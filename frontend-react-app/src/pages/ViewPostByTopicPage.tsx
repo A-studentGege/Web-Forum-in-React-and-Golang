@@ -1,14 +1,13 @@
 import Footer from "../components/common/Footer";
 import NavBar from "../components/common/NavBar";
 import TopicBar from "../components/common/TopicBar";
-// import PostList from "../components/ForumPostList";
-import LatestPostList from "../components/LatestPostList";
+import ByTopicPostList from "../components/ByTopicPostList";
 
 import Grid from "@mui/material/Grid";
 
 import React from "react";
 
-export default function ForumMainPage() {
+export default function ViewPostByTopicPage() {
   return (
     <Grid container spacing={2} sx={{ px: 2, minHeight: "100vh" }}>
       <Grid item xs={12}>
@@ -18,7 +17,7 @@ export default function ForumMainPage() {
         <TopicBar />
       </Grid>
       <Grid item xs={10}>
-        <LatestPostList />
+        <ByTopicPostList />
       </Grid>
 
       {/* Spacer */}
