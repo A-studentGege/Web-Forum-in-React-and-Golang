@@ -65,3 +65,29 @@ func GetPostsByTopicID(topic_id int) ([]Post, error) {
 
 	return posts, nil
 }
+
+func GetPostByID(id int) ([]Post, error) {
+	rows, err := db.DB.Query(
+		`SELECT p.id, p.title, p.content, t.name as topic, u.username,  p.created_at 
+		FROM posts p
+		JOIN users u ON p.author_id = u.id
+	 	JOIN topics t ON p.topic_id = t.id
+		WHERE p.id = $1`,
+		id,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []Post
+	for rows.Next() {
+		var p Post
+		if err := rows.Scan(&p.ID, &p.Title, &p.Content,&p.Topic,&p.Author, &p.CreatedAt); err != nil {
+			return nil, err
+		}
+		posts = append(posts, p)
+	}
+
+	return posts, nil
+}

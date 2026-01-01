@@ -23,7 +23,9 @@ func SetupRoutes() *chi.Mux {
 
 	r.Route("/posts", func (r chi.Router){
 		r.Get("/", handlers.GetLatestPosts) // get all posts order by time
+		r.Get("/{id}", handlers.GetPostByID) // get post details by post id
 		r.Get("/topic/{topicID}", handlers.GetPostsByTopicID) // get posts filtered by topic
+		
 	})
 
 	return r

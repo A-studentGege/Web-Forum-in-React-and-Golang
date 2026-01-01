@@ -29,7 +29,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/post/:postid" element={<ViewPostPage />} />
+            <Route path="/post/:postID" element={<ViewPostPage />} />
             {/*pass in post ID to render view page */}
             <Route path="/topic/:topicID" element={<ViewPostByTopicPage />} />
             <Route path="/create" element={<CreatePostPage />} />

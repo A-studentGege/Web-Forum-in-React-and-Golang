@@ -23,18 +23,33 @@ func GetLatestPosts(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPostsByTopicID(w http.ResponseWriter, r *http.Request) {
-	
 	idStr := chi.URLParam(r, "topicID")
-
-	// convert string -> int
 	topicID, err := strconv.Atoi(idStr)
 	if err != nil {
-	
 		http.Error(w, "invalid topic ID", http.StatusBadRequest)
 		return
 	}
 
 	posts, err := models.GetPostsByTopicID(topicID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Access-Control-Allow-Origin", "*") // for allowing CORS, otherwise req can't go through
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(posts)
+}
+
+func GetPostByID(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "invalid post ID", http.StatusBadRequest)
+		return
+	}
+
+	posts, err := models.GetPostByID(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

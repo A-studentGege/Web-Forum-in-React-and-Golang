@@ -5,25 +5,43 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
-import { Stack } from "@mui/material";
+import Stack from "@mui/material/Stack";
 
-import React from "react";
+import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 
 import { FormatDateHelper } from "../utils/FormatDateHelper";
 
 export default function PostView() {
-  const post: Post[] = [
-    {
-      id: 1,
-      author: "John Doe",
-      title: "Why is windows so problematic??",
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. orem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      topic: "Technology",
-      // topicColor: "primary",
-      createdAt: new Date("2025-12-17T20:30:00"),
-    },
-  ];
+  const { postID } = useParams<{ postID: string }>();
+  const [post, setPost] = useState<Post[] | null>(null);
+
+  // get post details by its id
+  useEffect(() => {
+    if (!postID) return;
+
+    fetch(`http://localhost:8080/posts/${postID}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setPost(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [postID]);
+
+  // if post is not ready, show loading for early return
+  if (!post) {
+    return (
+      <Card variant="outlined">
+        <CardContent sx={{ p: 3 }}>
+          <Typography variant="body2" color="text.secondary">
+            {"Loading post..."}
+          </Typography>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card variant="outlined">
@@ -31,21 +49,25 @@ export default function PostView() {
         <Stack direction={"row"} spacing={1} sx={{ py: 1 }} alignItems="center">
           <Typography variant="h4" component="h1">
             {post[0].title}
-            <Chip label={post[0].topic} color={"primary"} />
+            <Chip label={post[0].topic} color={"primary"} sx={{ ml: 1 }} />
             {/* for long title, chip still sticks at the end of text */}
           </Typography>
         </Stack>
 
         <Divider />
 
-        <Typography variant="body1" component={"p"} sx={{ py: 2 }}>
+        <Typography
+          variant="body1"
+          component={"p"}
+          sx={{ py: 2, whiteSpace: "pre-line" }}
+        >
           {post[0].content}
         </Typography>
 
         <Stack direction={"column"} alignItems={"end"}>
           <Typography variant="caption">{"~ " + post[0].author}</Typography>
           <Typography variant="caption">
-            At {FormatDateHelper(post[0].createdAt)}
+            At {FormatDateHelper(new Date(post[0].createdAt))}
           </Typography>
         </Stack>
       </CardContent>
