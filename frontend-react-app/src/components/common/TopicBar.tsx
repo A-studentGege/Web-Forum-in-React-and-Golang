@@ -7,7 +7,7 @@ import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Topic from "../../types/Topic";
 import TopicListItem from "./TopicListItem";
 
@@ -22,34 +22,25 @@ const style = {
   overflowY: "auto", // scroll inside box
 };
 
-const topics: Topic[] = [
-  { id: 1, name: "Academic" },
-  { id: 2, name: "Technology" },
-  { id: 3, name: "Anime" },
-  { id: 4, name: "Gaming" },
-  { id: 5, name: "Cybersecurity" },
-  { id: 6, name: "Programming" },
-  { id: 7, name: "Cooking" },
-  { id: 8, name: "Science" },
-  { id: 9, name: "Mathematics" },
-  { id: 10, name: "Design" },
-  { id: 11, name: "Finance" },
-  { id: 12, name: "Health" },
-  { id: 13, name: "Travel" },
-  { id: 14, name: "Music" },
-  { id: 15, name: "Movies" },
-  { id: 16, name: "Literature" },
-  { id: 17, name: "Philosophy" },
-  { id: 18, name: "Startups" },
-  { id: 19, name: "Arts" },
-  { id: 20, name: "Pets" },
-];
-
 export default function TopicBar() {
   // control all topic list opening
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const [topics, setTopics] = useState<Topic[]>([]);
+
+  // fetch topics from db
+  useEffect(() => {
+    fetch("http://localhost:8080/topics")
+      .then((res) => res.json())
+      .then((data) => {
+        setTopics(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
 
   return (
     <Card variant="outlined" sx={{ position: "sticky", top: 10 }}>

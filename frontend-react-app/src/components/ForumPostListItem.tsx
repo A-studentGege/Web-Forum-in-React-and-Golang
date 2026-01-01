@@ -4,9 +4,11 @@ import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
+import Link from "@mui/material/Link";
 
 import React from "react";
-import Link from "@mui/material/Link";
+
+import { MakePostPreview } from "../utils/MakePostPreview";
 
 type Props = {
   post: Post;
@@ -23,11 +25,11 @@ export default function PostListItem({ post }: Props) {
               {post.title}
             </Link>
           </Typography>
-          <Chip label={post.topic} color={post.topicColor} sx={{ ml: 1 }} />
+          <Chip label={post.topic} color={"primary"} sx={{ ml: 1 }} />
           {/* <Chip label={post.topic} sx={{ ml: 1, backgroundColor: post.topicColor, color: "#fff" }} /> */}
         </Stack>
 
-        <Typography variant="body2">{post.content}</Typography>
+        <Typography variant="body2">{MakePostPreview(post.content)}</Typography>
       </Card>
     </div>
   );

@@ -28,7 +28,8 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/post/1" element={<ViewPostPage />} />
+            <Route path="/post/:postid" element={<ViewPostPage />} />{" "}
+            {/*pass in post ID to render view page */}
             <Route path="/create" element={<CreatePostPage />} />
             <Route path="/login" element={<LoginPage />} />
           </Routes>

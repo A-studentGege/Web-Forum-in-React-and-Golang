@@ -6,7 +6,7 @@ type Post = {
   title: string;
   content: string;
   topic: string;
-  topicColor: ChipProps["color"];
+  // topicColor: ChipProps["color"];
   // topicColor: string;
   createdAt: Date;
 };

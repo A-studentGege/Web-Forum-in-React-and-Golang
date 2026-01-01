@@ -20,7 +20,7 @@ export default function PostView() {
       content:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. orem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       topic: "Technology",
-      topicColor: "primary",
+      // topicColor: "primary",
       createdAt: new Date("2025-12-17T20:30:00"),
     },
   ];
@@ -31,7 +31,7 @@ export default function PostView() {
         <Stack direction={"row"} spacing={1} sx={{ py: 1 }} alignItems="center">
           <Typography variant="h4" component="h1">
             {post[0].title}
-            <Chip label={post[0].topic} color={post[0].topicColor} />
+            <Chip label={post[0].topic} color={"primary"} />
             {/* for long title, chip still sticks at the end of text */}
           </Typography>
         </Stack>

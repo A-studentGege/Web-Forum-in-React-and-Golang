@@ -20,5 +20,9 @@ func SetupRoutes() *chi.Mux {
 		r.Get("/", handlers.GetTopics)
 	})
 
+	r.Route("/posts", func (r chi.Router){
+		r.Get("/", handlers.GetLatestPosts)
+	})
+
 	return r
 }
