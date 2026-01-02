@@ -29,7 +29,7 @@ export default function CommentItem({ comment }: Props) {
             </Typography>
             <Typography variant="caption">~ {comment.author}</Typography>
             <Typography variant="caption">
-              At {FormatDateHelper(comment.createdAt)}
+              At {FormatDateHelper(new Date(comment.createdAt))}
             </Typography>
           </Stack>
 
