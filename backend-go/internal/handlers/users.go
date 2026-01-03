@@ -60,13 +60,10 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TEMP: hardcoded check (replace with DB + bcrypt later)
-	if u.Username != "Chek" || u.Password != "123456" {
-		http.Error(w, "invalid credentials", http.StatusUnauthorized)
-		return
-	}
-
-	tokenString, err := auth.CreateToken(u.Username)
+	// retrieve user info from database
+	payload, err := models.LoginByUsername(u.Username)
+	
+	tokenString, err := auth.CreateToken(payload)
 	if err != nil {
 		http.Error(w, "failed to generate token", http.StatusInternalServerError)
 		return

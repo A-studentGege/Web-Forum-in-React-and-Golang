@@ -3,18 +3,20 @@ package auth
 import (
 	"fmt"
  	"time"
+	"os"
 
+	"github.com/A-studentGege/backend-go/internal/models"
 	"github.com/golang-jwt/jwt/v5"
- 	
 )
 
 
-var secretKey = []byte("secret-key")
+var secretKey = []byte(os.Getenv("JWT_SECRET"))
 
-func CreateToken(username string) (string, error) {
+func CreateToken(user *models.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
-			"username": username,
+			"username": user.Username,
+			"id": user.ID,
 			"exp":      time.Now().Add(time.Hour * 24).Unix(), // valid for 1d
 			"iat":      time.Now().Unix(),
 		})
