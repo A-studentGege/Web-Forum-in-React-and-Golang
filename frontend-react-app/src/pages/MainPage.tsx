@@ -1,32 +1,12 @@
-import Footer from "../components/common/Footer";
-import NavBar from "../components/common/NavBar";
-import TopicBar from "../components/common/TopicBar";
-// import PostList from "../components/ForumPostList";
-import LatestPostList from "../components/LatestPostList";
-
-import Grid from "@mui/material/Grid";
+import LatestPostList from "../components/posts/LatestPostList";
+import MainLayout from "./layout/MainLayout";
 
 import React from "react";
 
-export default function ForumMainPage() {
+export default function MainPage() {
   return (
-    <Grid container spacing={2} sx={{ px: 2, minHeight: "100vh" }}>
-      <Grid item xs={12}>
-        <NavBar />
-      </Grid>
-      <Grid item xs={2}>
-        <TopicBar />
-      </Grid>
-      <Grid item xs={10}>
-        <LatestPostList />
-      </Grid>
-
-      {/* Spacer */}
-      <Grid item xs={12} sx={{ flexGrow: 1 }} />
-
-      <Grid item xs={12} sx={{ mt: "auto" }}>
-        <Footer />
-      </Grid>
-    </Grid>
+    <MainLayout>
+      <LatestPostList />
+    </MainLayout>
   );
 }

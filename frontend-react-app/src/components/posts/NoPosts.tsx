@@ -1,4 +1,4 @@
-import EmptyState from "./states/EmptyState";
+import EmptyState from "../states/EmptyState";
 
 import React from "react";
 

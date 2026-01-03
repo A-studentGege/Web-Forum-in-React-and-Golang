@@ -11,33 +11,9 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-
 import SendIcon from "@mui/icons-material/Send";
 
-import React from "react";
-
-const topics: Topic[] = [
-  { id: 1, name: "Academic" },
-  { id: 2, name: "Technology" },
-  { id: 3, name: "Anime" },
-  { id: 4, name: "Gaming" },
-  { id: 5, name: "Cybersecurity" },
-  { id: 6, name: "Programming" },
-  { id: 7, name: "Cooking" },
-  { id: 8, name: "Science" },
-  { id: 9, name: "Mathematics" },
-  { id: 10, name: "Design" },
-  { id: 11, name: "Finance" },
-  { id: 12, name: "Health" },
-  { id: 13, name: "Travel" },
-  { id: 14, name: "Music" },
-  { id: 15, name: "Movies" },
-  { id: 16, name: "Literature" },
-  { id: 17, name: "Philosophy" },
-  { id: 18, name: "Startups" },
-  { id: 19, name: "Arts" },
-  { id: 20, name: "Pets" },
-];
+import React, { useEffect, useState } from "react";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -51,7 +27,20 @@ const MenuProps = {
 };
 
 export default function CreatePostForm() {
+  const [topics, setTopics] = useState<Topic[]>([]);
   const [topicID, setTopicID] = React.useState("");
+
+  // fetch topics from db
+  useEffect(() => {
+    fetch("http://localhost:8080/topics")
+      .then((res) => res.json())
+      .then((data) => {
+        setTopics(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
 
   const handleChange = (event: SelectChangeEvent) => {
     setTopicID(event.target.value);

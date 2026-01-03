@@ -13,7 +13,7 @@ export default function LoginPage() {
         <NavBar />
       </Grid>
 
-      <Grid container sx={{ justifyContent: "center" }}>
+      <Grid container sx={{ display: "flex", justifyContent: "center" }}>
         <LoginForm />
       </Grid>
 

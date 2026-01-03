@@ -1,9 +1,9 @@
-import Post from "../types/Post";
+import Post from "../../types/Post";
 
-import PostList from "./ForumPostList";
+import PostList from "./PostList";
 
 import React, { useState, useEffect } from "react";
-import LoadingState from "./states/LoadingState";
+import LoadingState from "../states/LoadingState";
 
 export default function LatestPostList() {
   const [posts, setPosts] = useState<Post[]>([]);

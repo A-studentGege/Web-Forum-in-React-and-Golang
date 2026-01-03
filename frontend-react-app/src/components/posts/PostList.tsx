@@ -1,5 +1,5 @@
-import Post from "../types/Post";
-import PostListItem from "./ForumPostListItem";
+import Post from "../../types/Post";
+import PostListItem from "./PostListItem";
 import NoPosts from "./NoPosts";
 
 import Typography from "@mui/material/Typography";

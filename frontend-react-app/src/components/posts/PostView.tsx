@@ -1,4 +1,4 @@
-import Post from "../types/Post";
+import Post from "../../types/Post";
 
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -10,7 +10,7 @@ import Stack from "@mui/material/Stack";
 import { useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 
-import { FormatDateHelper } from "../utils/FormatDateHelper";
+import { FormatDateHelper } from "../../utils/FormatDateHelper";
 
 export default function PostView() {
   const { postID } = useParams<{ postID: string }>();

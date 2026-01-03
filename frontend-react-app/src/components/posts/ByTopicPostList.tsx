@@ -1,7 +1,7 @@
-import Post from "../types/Post";
+import Post from "../../types/Post";
 
-import PostList from "./ForumPostList";
-import LoadingState from "./states/LoadingState";
+import PostList from "./PostList";
+import LoadingState from "../states/LoadingState";
 
 import { useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";

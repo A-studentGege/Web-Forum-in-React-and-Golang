@@ -1,7 +1,5 @@
-import Comment from "../types/Comment";
+import Comment from "../../types/Comment";
 import CommentItem from "./CommentItem";
-
-import Typography from "@mui/material/Typography";
 
 import { useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";

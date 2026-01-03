@@ -1,4 +1,4 @@
-import Post from "../types/Post";
+import Post from "../../types/Post";
 
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
@@ -8,7 +8,7 @@ import Link from "@mui/material/Link";
 
 import React from "react";
 
-import { MakePostPreview } from "../utils/MakePostPreview";
+import { MakePostPreview } from "../../utils/MakePostPreview";
 
 type Props = {
   post: Post;

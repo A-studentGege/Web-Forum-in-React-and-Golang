@@ -7,8 +7,8 @@ import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import React from "react";
-import Comment from "../types/Comment";
-import { FormatDateHelper } from "../utils/FormatDateHelper";
+import Comment from "../../types/Comment";
+import { FormatDateHelper } from "../../utils/FormatDateHelper";
 
 type Props = {
   comment: Comment;
