@@ -6,7 +6,7 @@ import (
 
 type User struct {
 	ID    int    `json:"id"`
-	Name  string `json:"name"`
+	Username  string `json:"username"`
 }
 
 func GetAllUsers() ([]User, error) {
@@ -21,7 +21,7 @@ func GetAllUsers() ([]User, error) {
 	var users []User
 	for rows.Next() {
 		var u User
-		if err := rows.Scan(&u.ID, &u.Name); err != nil {
+		if err := rows.Scan(&u.ID, &u.Username); err != nil {
 			return nil, err
 		}
 		users = append(users, u)
@@ -38,7 +38,26 @@ func GetUserByID(id int) (*User, error) {
 	)
 
 	var u User
-	if err := row.Scan(&u.ID, &u.Name); err != nil {
+	if err := row.Scan(&u.ID, &u.Username); err != nil {
+		return nil, err
+	}
+
+	return &u, nil
+}
+
+func LoginByUsername(username string) (*User, error){
+	row := db.DB.QueryRow(
+		// if user already exists, retrieve the existing record
+		// if user not exists, insert a new record
+		`INSERT INTO users (username) VALUES ($1)
+		ON CONFLICT (username) DO UPDATE 
+		SET username = EXCLUDED.username
+		RETURNING id, username;`,
+		username,
+	)
+
+	var u User
+	if err := row.Scan(&u.ID, &u.Username); err != nil {
 		return nil, err
 	}
 

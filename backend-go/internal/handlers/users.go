@@ -10,6 +10,14 @@ import (
 	
 )
 
+type User struct {
+	ID int `json:"id"`
+	Username	string    `json:"username"`
+	// UserType int `json:"userType"`
+}
+
+
+
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := models.GetAllUsers()
 	if err != nil {
@@ -41,4 +49,28 @@ func GetUserByID(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
+}
+
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	var u User
+	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
+		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// retrieve user info from database
+	payload, err := models.LoginByUsername(u.Username)
+	
+	tokenString, err := auth.CreateToken(payload)
+	if err != nil {
+		http.Error(w, "failed to generate token", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{
+		"token": tokenString,
+	})
 }
