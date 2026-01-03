@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/joho/godotenv"
-	"test-go-app/internal/db"
-	"test-go-app/internal/routes"
+	"github.com/A-studentGege/backend-go/internal/db"
+	"github.com/A-studentGege/backend-go/internal/routes"
 )
 
 func main() {

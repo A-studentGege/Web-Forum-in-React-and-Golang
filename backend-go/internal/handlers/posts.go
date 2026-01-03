@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"test-go-app/internal/models"
+	"github.com/A-studentGege/backend-go/internal/models"
 	"github.com/go-chi/chi/v5"
 	
 )

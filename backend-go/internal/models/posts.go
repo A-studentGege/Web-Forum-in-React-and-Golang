@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"test-go-app/internal/db"
+	"github.com/A-studentGege/backend-go/internal/db"
 )
 
 type Post struct {

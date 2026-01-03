@@ -5,10 +5,18 @@ import (
 	"net/http"
 	"strconv"
 
-	"test-go-app/internal/models"
-	"github.com/go-chi/chi/v5"
-	
+	"github.com/A-studentGege/backend-go/internal/models"
+	"github.com/A-studentGege/backend-go/internal/auth"
+
+	"github.com/go-chi/chi/v5"	
 )
+
+type User struct {
+	Username	string    `json:"username"`
+	Password  string `json:"password"`
+}
+
+
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := models.GetAllUsers()
@@ -41,4 +49,31 @@ func GetUserByID(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
+}
+
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	var u User
+	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
+		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// TEMP: hardcoded check (replace with DB + bcrypt later)
+	if u.Username != "Chek" || u.Password != "123456" {
+		http.Error(w, "invalid credentials", http.StatusUnauthorized)
+		return
+	}
+
+	tokenString, err := auth.CreateToken(u.Username)
+	if err != nil {
+		http.Error(w, "failed to generate token", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{
+		"token": tokenString,
+	})
 }

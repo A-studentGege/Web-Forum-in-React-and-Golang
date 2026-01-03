@@ -1,7 +1,7 @@
 package models
 
 import (
-	"test-go-app/internal/db"
+	"github.com/A-studentGege/backend-go/internal/db"
 )
 
 type Topic struct {

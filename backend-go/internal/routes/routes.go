@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"test-go-app/internal/handlers"
+	"github.com/A-studentGege/backend-go/internal/handlers"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -14,6 +14,7 @@ func SetupRoutes() *chi.Mux {
 	r.Route("/users", func (r chi.Router){
 		r.Get("/", handlers.GetUsers)
 		r.Get("/{id}", handlers.GetUserByID)
+		r.Post("/login", handlers.LoginHandler)
 	})
 
 	r.Route("/topics", func (r chi.Router){
