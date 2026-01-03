@@ -17,7 +17,6 @@ func GetTopics(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Access-Control-Allow-Origin", "*") // for allowing CORS, otherwise req can't go through
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(topics)
 }
@@ -39,7 +38,6 @@ func GetTopicNameByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Access-Control-Allow-Origin", "*") // for allowing CORS, otherwise req can't go through
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(topics)
 }

@@ -4,10 +4,21 @@ import (
 	"github.com/A-studentGege/backend-go/internal/handlers"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 )
 
 func SetupRoutes() *chi.Mux {
 	r := chi.NewRouter()
+
+	// Basic CORS setup
+    r.Use(cors.Handler(cors.Options{
+        AllowedOrigins:   []string{"http://localhost:5173", "http://localhost:3000"}, // Your React URLs
+        AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+        AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+        ExposedHeaders:   []string{"Link"},
+        AllowCredentials: true,
+        MaxAge:           300, // Maximum value not ignored by any of major browsers
+    }))
 
 	// all the routes go here
 	// need figure out parameter and query parameter usage and how to pass in to operations
