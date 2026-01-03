@@ -10,6 +10,9 @@ import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import CreateIcon from "@mui/icons-material/Create";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import LogoutIcon from "@mui/icons-material/Logout";
+
+import { useAuth } from "../../context/AuthContext";
 
 import React from "react";
 
@@ -21,6 +24,8 @@ const Search = styled("div")(({ theme }) => ({
 }));
 
 export default function NavBar() {
+  const { isAuthenticated, logout } = useAuth();
+
   return (
     <Box
       sx={{
@@ -50,18 +55,33 @@ export default function NavBar() {
         </Stack>
 
         <Stack direction={"row"} alignContent={"end"}>
-          <Button variant="text" href="/create" endIcon={<CreateIcon />}>
-            {"Create"}
-          </Button>
+          {isAuthenticated && (
+            <Button variant="text" href="/create" endIcon={<CreateIcon />}>
+              {"Create"}
+            </Button>
+          )}
 
-          <Button
-            variant="text"
-            color="inherit"
-            href="/login"
-            endIcon={<AccountBoxIcon />}
-          >
-            {"Login"}
-          </Button>
+          {!isAuthenticated ? ( // if not logged in, show login button only
+            <Button
+              variant="text"
+              color="inherit"
+              href="/login"
+              endIcon={<AccountBoxIcon />}
+            >
+              {"Login"}
+            </Button>
+          ) : (
+            // else show profile and logout buttons
+            // **try show current username (GET /user/me)
+            <>
+              <Button variant="text" endIcon={<AccountBoxIcon />}>
+                {`Profile`}
+              </Button>
+              <Button variant="text" onClick={logout} endIcon={<LogoutIcon />}>
+                {`Logout`}
+              </Button>
+            </>
+          )}
         </Stack>
       </Stack>
     </Box>

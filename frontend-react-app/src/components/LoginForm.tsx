@@ -5,11 +5,33 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 
-import React from "react";
+import React, { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
+  const [username, setUsername] = useState("");
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      // if login successful, redirect to home page
+      await login(username);
+      navigate("/");
+    } catch (err) {
+      alert("Login failed, please check your username or network connection.");
+    }
+  };
+
   return (
-    <Card variant="outlined" sx={{ height: 1 }}>
+    <Card
+      variant="outlined"
+      sx={{ height: 1 }}
+      component={"form"}
+      onSubmit={handleSubmit}
+    >
       <Stack
         direction={"column"}
         spacing={1}
@@ -26,13 +48,20 @@ export default function LoginForm() {
           label="Username"
           placeholder="What do you go by?"
           variant="standard"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <ButtonGroup
           variant="outlined"
           aria-label="login button group"
           sx={{ my: 3, alignSelf: "center" }}
         >
-          <Button variant="contained" color="primary" disableElevation>
+          <Button
+            variant="contained"
+            color="primary"
+            disableElevation
+            type="submit"
+          >
             {"Login"}
           </Button>
           <Button variant="outlined" color="inherit">

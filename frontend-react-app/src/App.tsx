@@ -3,11 +3,12 @@ import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 // import { blue, orange } from "@mui/material/colors";
-import HomePage from "./pages/MainPage";
+import MainPage from "./pages/MainPage";
 import ViewPostPage from "./pages/ViewPostPage";
 import CreatePostPage from "./pages/CreatePostPage";
 import LoginPage from "./pages/LoginPage";
 import ViewPostByTopicPage from "./pages/ViewPostByTopicPage";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const theme = createTheme({
   // palette: {
@@ -28,12 +29,16 @@ function App() {
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/post/:postID" element={<ViewPostPage />} />
-            {/*pass in post ID to render view page */}
-            <Route path="/topic/:topicID" element={<ViewPostByTopicPage />} />
-            <Route path="/create" element={<CreatePostPage />} />
+            {/* public route, user must login to view forum pages */}
             <Route path="/login" element={<LoginPage />} />
+
+            {/* protected routes, user must log in to access */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/" element={<MainPage />} />
+              <Route path="/post/:postID" element={<ViewPostPage />} />
+              <Route path="/topic/:topicID" element={<ViewPostByTopicPage />} />
+              <Route path="/create" element={<CreatePostPage />} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
