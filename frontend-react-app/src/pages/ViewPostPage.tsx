@@ -1,9 +1,9 @@
+import Stack from "@mui/material/Stack";
+
 import PostView from "../components/posts/PostView";
 import CommentField from "../components/comments/CommentField";
 import CommentList from "../components/comments/CommentList";
 import MainLayout from "./layout/MainLayout";
-
-import Stack from "@mui/material/Stack";
 
 import React from "react";
 

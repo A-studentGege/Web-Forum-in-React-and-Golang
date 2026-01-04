@@ -15,14 +15,14 @@ type Comment struct {
 }
 
 
-func GetCommentsByPostID(post_id int) ([]Comment, error) {
+func GetCommentsByPostID(postID int) ([]Comment, error) {
 	rows, err := db.DB.Query(
 		`SELECT c.id, c.content, c.post_id, u.username, c.created_at
 		FROM comments c
 		JOIN users u ON c.author_id = u.id
 		WHERE c.post_id = $1
 		ORDER BY c.created_at DESC`,
-		post_id,
+		postID,
 	)
 	if err != nil {
 		return nil, err

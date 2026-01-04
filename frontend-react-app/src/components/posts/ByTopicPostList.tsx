@@ -1,10 +1,10 @@
 import Post from "../../types/Post";
 
-import PostList from "./PostList";
-import LoadingState from "../states/LoadingState";
-
 import { useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+
+import PostList from "./PostList";
+import LoadingState from "../states/LoadingState";
 
 export default function ByTopicPostList() {
   const [loading, setLoading] = useState(true);

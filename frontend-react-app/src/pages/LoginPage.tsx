@@ -1,8 +1,8 @@
+import Grid from "@mui/material/Grid";
+
 import Footer from "../components/common/Footer";
 import NavBar from "../components/common/NavBar";
 import LoginForm from "../components/LoginForm";
-
-import Grid from "@mui/material/Grid";
 
 import React from "react";
 

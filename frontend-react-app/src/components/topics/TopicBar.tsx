@@ -1,3 +1,5 @@
+import Topic from "../../types/Topic";
+
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
@@ -6,9 +8,8 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
-
 import React, { useState, useEffect } from "react";
-import Topic from "../../types/Topic";
+
 import TopicListItem from "./TopicListItem";
 
 const style = {

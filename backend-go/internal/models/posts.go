@@ -40,14 +40,14 @@ func GetLatestPosts() ([]Post, error) {
 	return posts, nil
 }
 
-func GetPostsByTopicID(topic_id int) ([]Post, error) {
+func GetPostsByTopicID(topicID int) ([]Post, error) {
 	rows, err := db.DB.Query(
 		`SELECT p.id, p.title, p.content, t.name as topic, u.username,  p.created_at 
 		FROM posts p
 		JOIN users u ON p.author_id = u.id
 	 	JOIN topics t ON p.topic_id = t.id
 		WHERE p.topic_id = $1`,
-		topic_id,
+		topicID,
 	)
 	if err != nil {
 		return nil, err
@@ -90,4 +90,21 @@ func GetPostByID(id int) ([]Post, error) {
 	}
 
 	return posts, nil
+}
+
+func CreatePost(authorID int, title string, content string, topicID int) (int, error) {
+	var lastInsertID int
+	
+    // insert new post and return new record's id 
+    query := `INSERT INTO posts (author_id, title, content, topic_id) 
+              VALUES ($1, $2, $3, $4) 
+              RETURNING id`
+
+    err := db.DB.QueryRow(query, authorID, title, content, topicID).Scan(&lastInsertID)
+    
+    if err != nil {
+        return 0, err
+    }
+
+    return lastInsertID, nil
 }

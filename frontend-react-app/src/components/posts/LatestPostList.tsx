@@ -1,8 +1,8 @@
 import Post from "../../types/Post";
 
-import PostList from "./PostList";
-
 import React, { useState, useEffect } from "react";
+
+import PostList from "./PostList";
 import LoadingState from "../states/LoadingState";
 
 export default function LatestPostList() {

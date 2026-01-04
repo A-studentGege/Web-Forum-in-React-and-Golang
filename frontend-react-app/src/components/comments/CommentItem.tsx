@@ -1,13 +1,14 @@
+import Comment from "../../types/Comment";
+
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import React from "react";
-import Comment from "../../types/Comment";
+
 import { FormatDateHelper } from "../../utils/FormatDateHelper";
 
 type Props = {
