@@ -4,11 +4,19 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"log"
 
 	"github.com/A-studentGege/backend-go/internal/models"
+	"github.com/A-studentGege/backend-go/internal/auth"
 	"github.com/go-chi/chi/v5"
 	
 )
+
+type CreatePostRequest struct {
+    Title    string `json:"title"`
+    Content  string `json:"content"`
+    TopicID  int    `json:"topic_id"`
+}
 
 func GetLatestPosts(w http.ResponseWriter, r *http.Request) {
 	posts, err := models.GetLatestPosts()
@@ -55,4 +63,38 @@ func GetPostByID(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(posts)
+}
+
+func CreatePost(w http.ResponseWriter, r *http.Request){
+	// retrieve user id from auth middleware extraction 
+	authorID, ok := r.Context().Value(auth.UserIDKey).(int)
+    if !ok {
+        http.Error(w, "User identity not found", http.StatusInternalServerError)
+        return
+    }
+
+	// decode json body to get values
+	var req CreatePostRequest
+    err := json.NewDecoder(r.Body).Decode(&req)
+    if err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
+
+	// validation to check if title or content is empty 
+	if req.Title == "" || req.Content == "" {
+        http.Error(w, "Title and Content are required", http.StatusBadRequest)
+        return
+    }
+
+	newID, err := models.CreatePost(authorID, req.Title, req.Content, req.TopicID)
+    if err != nil {
+        log.Printf("Database error: %v", err)
+        http.Error(w, "Failed to create post", http.StatusInternalServerError)
+        return
+    }
+
+	w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusCreated)
+    json.NewEncoder(w).Encode(map[string]int{"id": newID})
 }

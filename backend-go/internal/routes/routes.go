@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/A-studentGege/backend-go/internal/handlers"
+	"github.com/A-studentGege/backend-go/internal/auth"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
@@ -12,7 +13,7 @@ func SetupRoutes() *chi.Mux {
 
 	// Basic CORS setup
     r.Use(cors.Handler(cors.Options{
-        AllowedOrigins:   []string{"http://localhost:5173", "http://localhost:3000"}, // Your React URLs
+        AllowedOrigins:   []string{"http://localhost:5173", "http://localhost:3000"},
         AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
         AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
         ExposedHeaders:   []string{"Link"},
@@ -38,6 +39,8 @@ func SetupRoutes() *chi.Mux {
 		r.Get("/{id}", handlers.GetPostByID) // get post details by post id
 		r.Get("/{id}/comments", handlers.GetCommentsByPostID) // get a post's comments by post id 
 		r.Get("/topic/{topicID}", handlers.GetPostsByTopicID) // get posts filtered by topic
+
+		r.Post("/", auth.AuthMiddleware(handlers.CreatePost))
 		
 	})
 
