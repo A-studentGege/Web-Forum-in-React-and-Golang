@@ -1,26 +1,9 @@
-import Post from "../../types/Post";
-
-import React, { useState, useEffect } from "react";
-
-import PostList from "./PostList";
+import { useLatestPosts } from "../../hooks/useLatestPosts";
 import LoadingState from "../states/LoadingState";
+import PostList from "./PostList";
 
 export default function LatestPostList() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // fetch latest sposts from db
-  useEffect(() => {
-    fetch("http://localhost:8080/posts")
-      .then((res) => res.json())
-      .then((data) => {
-        setPosts(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
+  const { posts, loading } = useLatestPosts();
 
   if (loading) {
     return <LoadingState message="receiving latest posts..." />;

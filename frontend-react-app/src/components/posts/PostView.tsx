@@ -1,5 +1,3 @@
-import Post from "../../types/Post";
-
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -8,27 +6,19 @@ import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 
 import { useParams } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+
+import LoadingState from "../states/LoadingState";
+import usePostByID from "../../hooks/usePostByID";
 
 import { FormatDateHelper } from "../../utils/FormatDateHelper";
 
 export default function PostView() {
   const { postID } = useParams<{ postID: string }>();
-  const [post, setPost] = useState<Post[] | null>(null);
+  const { post, loading } = usePostByID(postID);
 
-  // get post details by its id
-  useEffect(() => {
-    if (!postID) return;
-
-    fetch(`http://localhost:8080/posts/${postID}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setPost(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [postID]);
+  if (loading) {
+    return <LoadingState message="looking for the post..." />;
+  }
 
   // if post is not ready, show loading for early return
   if (!post) {
