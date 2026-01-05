@@ -32,12 +32,12 @@ func GetTopicNameByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	topics, err := models.GetTopicNameByID(id)
+	topic, err := models.GetTopicNameByID(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(topics)
+	json.NewEncoder(w).Encode(topic)
 }

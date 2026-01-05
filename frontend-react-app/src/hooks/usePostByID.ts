@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getPostByID } from "../services/postService";
 
 export default function usePostByID(postId?: string){
-  const [post, setPost] = useState<Post[] | null>(null);
+  const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,6 +20,6 @@ export default function usePostByID(postId?: string){
       .catch(() => setError("Failed to load the post"))
       .finally(() => setLoading(false));
   }, [postId]);
-
+  
   return { post, loading, error };
 }

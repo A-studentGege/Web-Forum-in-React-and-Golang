@@ -55,14 +55,14 @@ func GetPostByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, err := models.GetPostByID(id)
+	post, err := models.GetPostByID(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(posts)
+	json.NewEncoder(w).Encode(post)
 }
 
 func CreatePost(w http.ResponseWriter, r *http.Request){

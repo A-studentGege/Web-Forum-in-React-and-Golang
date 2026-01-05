@@ -12,12 +12,13 @@ type Post struct {
 	Content string `json:"content"`
 	Topic string `json:"topic"`
 	Author string `json:"author"`
-	CreatedAt time.Time `json:"createdAt"`
+	AuthorID int `json:"author_id"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 func GetLatestPosts() ([]Post, error) {
 	rows, err := db.DB.Query(
-		`SELECT p.id, p.title, p.content, t.name, u.username,  p.created_at 
+		`SELECT p.id, p.title, p.content, t.name, u.username, u.id, p.created_at 
 		FROM posts p
 		JOIN users u ON p.author_id = u.id
 	 	JOIN topics t ON p.topic_id = t.id
@@ -31,7 +32,7 @@ func GetLatestPosts() ([]Post, error) {
 	var posts []Post
 	for rows.Next() {
 		var p Post
-		if err := rows.Scan(&p.ID, &p.Title, &p.Content,&p.Topic,&p.Author, &p.CreatedAt); err != nil {
+		if err := rows.Scan(&p.ID, &p.Title, &p.Content,&p.Topic,&p.Author, &p.AuthorID, &p.CreatedAt); err != nil {
 			return nil, err
 		}
 		posts = append(posts, p)
@@ -42,7 +43,7 @@ func GetLatestPosts() ([]Post, error) {
 
 func GetPostsByTopicID(topicID int) ([]Post, error) {
 	rows, err := db.DB.Query(
-		`SELECT p.id, p.title, p.content, t.name as topic, u.username,  p.created_at 
+		`SELECT p.id, p.title, p.content, t.name as topic, u.username, u.id, p.created_at 
 		FROM posts p
 		JOIN users u ON p.author_id = u.id
 	 	JOIN topics t ON p.topic_id = t.id
@@ -57,7 +58,7 @@ func GetPostsByTopicID(topicID int) ([]Post, error) {
 	var posts []Post
 	for rows.Next() {
 		var p Post
-		if err := rows.Scan(&p.ID, &p.Title, &p.Content,&p.Topic,&p.Author, &p.CreatedAt); err != nil {
+		if err := rows.Scan(&p.ID, &p.Title, &p.Content,&p.Topic,&p.Author, &p.AuthorID, &p.CreatedAt); err != nil {
 			return nil, err
 		}
 		posts = append(posts, p)
@@ -66,9 +67,9 @@ func GetPostsByTopicID(topicID int) ([]Post, error) {
 	return posts, nil
 }
 
-func GetPostByID(id int) ([]Post, error) {
+func GetPostByID(id int) (*Post, error) {
 	rows, err := db.DB.Query(
-		`SELECT p.id, p.title, p.content, t.name as topic, u.username,  p.created_at 
+		`SELECT p.id, p.title, p.content, t.name as topic, u.username, u.id, p.created_at 
 		FROM posts p
 		JOIN users u ON p.author_id = u.id
 	 	JOIN topics t ON p.topic_id = t.id
@@ -80,16 +81,14 @@ func GetPostByID(id int) ([]Post, error) {
 	}
 	defer rows.Close()
 
-	var posts []Post
+	var p Post
 	for rows.Next() {
-		var p Post
-		if err := rows.Scan(&p.ID, &p.Title, &p.Content,&p.Topic,&p.Author, &p.CreatedAt); err != nil {
+		if err := rows.Scan(&p.ID, &p.Title, &p.Content,&p.Topic,&p.Author, &p.AuthorID,  &p.CreatedAt); err != nil {
 			return nil, err
 		}
-		posts = append(posts, p)
 	}
 
-	return posts, nil
+	return &p, nil // return a single post object
 }
 
 func CreatePost(authorID int, title string, content string, topicID int) (int, error) {

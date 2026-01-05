@@ -8,11 +8,10 @@ export async function getLatestPosts() : Promise<Post[]> {
   return res.json();
 }
 
-export async function getPostByID(postId : string) : Promise<Post[]> {
+export async function getPostByID(postId : string) : Promise<Post> {
   const res = await await fetch(`${BASE_URL}/posts/${postId}`);
   if (!res.ok) throw new Error("Failed to fetch the post's details");
   return res.json();
-
 }
 
 export async function createPost(
