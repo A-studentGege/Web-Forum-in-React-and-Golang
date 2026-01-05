@@ -6,9 +6,50 @@ import TextField from "@mui/material/TextField";
 import SendIcon from "@mui/icons-material/Send";
 import CancelIcon from "@mui/icons-material/Cancel";
 
-import React from "react";
+import { useAuth } from "../../context/AuthContext";
+import { createComment } from "../../services/commentService";
 
-export default function CommentField() {
+import React from "react";
+import { useParams } from "react-router-dom";
+
+export default function CommentField({
+  onCommentCreated,
+}: {
+  onCommentCreated: () => void;
+}) {
+  const { token } = useAuth();
+  const { postID } = useParams<{ postID: string }>();
+  const [content, setContent] = React.useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!token) {
+      alert("You must be logged in to comment");
+      return;
+    }
+
+    // prevent undefined post id is passed to api call
+    if (!postID) {
+      alert("Invalid post");
+      return;
+    }
+
+    if (!content) {
+      alert("Comment cannot be empty!");
+      return;
+    }
+
+    const payload = {
+      content,
+    };
+
+    await createComment(postID, token!, payload);
+
+    setContent(""); // reset  the comment field after submission
+    onCommentCreated(); // trigger comment list refresh
+  };
+
   return (
     <Card
       variant="outlined"
@@ -16,7 +57,13 @@ export default function CommentField() {
         p: 2,
       }}
     >
-      <Stack direction={"column"} spacing={2} alignItems="flex-start">
+      <Stack
+        direction={"column"}
+        spacing={2}
+        alignItems="flex-start"
+        component={"form"}
+        onSubmit={handleSubmit}
+      >
         <TextField
           label="Leave a comment"
           multiline
@@ -25,6 +72,8 @@ export default function CommentField() {
           placeholder="While you have the freedom to share your opinion, please remain respectful!"
           variant="standard"
           sx={{ pb: 1 }}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
         />
 
         <ButtonGroup
@@ -35,6 +84,7 @@ export default function CommentField() {
           <Button
             variant="contained"
             color="primary"
+            type="submit"
             disableElevation
             endIcon={<SendIcon />}
           >

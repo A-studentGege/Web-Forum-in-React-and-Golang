@@ -1,24 +1,17 @@
-import Comment from "../../types/Comment";
-
 import { useParams } from "react-router-dom";
-import React, { useState, useEffect } from "react";
 
+import useCommentsByPostID from "../../hooks/useCommentsByPostID";
+import LoadingState from "../states/LoadingState";
 import CommentItem from "./CommentItem";
 import NoComments from "./NoComments";
 
-export default function CommentList() {
+export default function CommentList({ refreshKey }: { refreshKey: number }) {
   const { postID } = useParams<{ postID: string }>();
-  const [comments, setComments] = useState<Comment[]>([]);
+  const { comments, loading } = useCommentsByPostID(postID, refreshKey);
 
-  useEffect(() => {
-    if (!postID) return;
-
-    // fetch comments under this post
-    fetch(`http://localhost:8080/posts/${postID}/comments`)
-      .then((res) => res.json())
-      .then((data) => setComments(data))
-      .catch(console.error);
-  }, [postID]);
+  if (loading) {
+    return <LoadingState message="looking for the post..." />;
+  }
 
   // handle case where the post has no comments
   if (comments === null) {

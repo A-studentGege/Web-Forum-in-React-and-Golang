@@ -41,6 +41,7 @@ func SetupRoutes() *chi.Mux {
 		r.Get("/topic/{topicID}", handlers.GetPostsByTopicID) // get posts filtered by topic
 
 		r.Post("/", auth.AuthMiddleware(handlers.CreatePost))
+		r.Post("/{id}/comments", auth.AuthMiddleware(handlers.CreateComment))
 		
 	})
 

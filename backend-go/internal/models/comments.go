@@ -40,3 +40,20 @@ func GetCommentsByPostID(postID int) ([]Comment, error) {
 
 	return comments, nil
 }
+
+func CreateComment(authorID int, postID int, content string) (int, error){
+	var lastInsertID int
+	
+    // insert new comment and return new record's id 
+    query := `INSERT INTO comments (author_id, post_id, content) 
+              VALUES ($1, $2, $3) 
+              RETURNING id`
+
+    err := db.DB.QueryRow(query, authorID, postID, content).Scan(&lastInsertID)
+    
+    if err != nil {
+        return 0, err
+    }
+
+    return lastInsertID, nil
+}
