@@ -1,10 +1,10 @@
 type Comment = {
   id: number;
-  postID: number;
+  post_id: number;
   content: string;
-  //   author_id: number;
+  author_id: number;
   author: string;
-  createdAt: Date;
+  created_at: Date;
 };
 
 export default Comment;

@@ -9,6 +9,8 @@ import React, {
   ReactNode,
 } from "react";
 
+import { decodeToken } from "../utils/decodeToken";
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -22,8 +24,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     if (savedToken) {
-      // fetch user profile here using the token
+      const decoded = decodeToken(savedToken);
+
       setToken(savedToken);
+      // store user details to user state
+      setUser({
+        id: decoded.id,
+        username: decoded.username,
+      });
     }
   }, []);
 

@@ -9,15 +9,16 @@ import (
 type Comment struct {
 	ID    int    `json:"id"`
 	Content  string `json:"content"`
-	PostID int `json:"postid"`
+	PostID int `json:"post_id"`
 	Author string `json:"author"`
-	CreatedAt time.Time `json:"createdAt"`
+	AuthorID int `json:"author_id"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 
 func GetCommentsByPostID(postID int) ([]Comment, error) {
 	rows, err := db.DB.Query(
-		`SELECT c.id, c.content, c.post_id, u.username, c.created_at
+		`SELECT c.id, c.content, c.post_id, u.username, u.id, c.created_at
 		FROM comments c
 		JOIN users u ON c.author_id = u.id
 		WHERE c.post_id = $1
@@ -32,7 +33,7 @@ func GetCommentsByPostID(postID int) ([]Comment, error) {
 	var comments []Comment
 	for rows.Next() {
 		var c Comment
-		if err := rows.Scan(&c.ID, &c.Content,&c.PostID, &c.Author, &c.CreatedAt); err != nil {
+		if err := rows.Scan(&c.ID, &c.Content,&c.PostID, &c.Author, &c.AuthorID, &c.CreatedAt); err != nil {
 			return nil, err
 		}
 		comments = append(comments, c)
