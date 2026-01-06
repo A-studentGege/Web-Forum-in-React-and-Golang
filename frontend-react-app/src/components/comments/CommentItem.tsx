@@ -8,19 +8,30 @@ import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 import React from "react";
 
 import { FormatDateHelper } from "../../utils/FormatDateHelper";
 import { useAuth } from "../../context/AuthContext";
+import { deleteComment } from "../../services/commentService";
 
 type Props = {
   comment: Comment;
+  onDeleted: () => void;
 };
 
-export default function CommentItem({ comment }: Props) {
-  const { user, isAuthenticated } = useAuth();
+export default function CommentItem({ comment, onDeleted }: Props) {
+  const { token, user, isAuthenticated } = useAuth();
   const isOwner = isAuthenticated && user?.id === comment.author_id;
+
+  // controls the confirm dialog
+  const [confirmOpen, setConfirmOpen] = React.useState(false);
 
   // controls comment option menu
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -30,6 +41,18 @@ export default function CommentItem({ comment }: Props) {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  // when user clicks delete, send delete req
+  const handleDelete = async () => {
+    setConfirmOpen(false);
+
+    try {
+      await deleteComment(comment.id, token!);
+      onDeleted(); // trigger refresh on parent component CommentList
+    } catch (err) {
+      console.error("Failed to delete comment", err);
+    }
   };
 
   return (
@@ -81,7 +104,44 @@ export default function CommentItem({ comment }: Props) {
                 }}
               >
                 <MenuItem onClick={handleClose}>{"Edit"}</MenuItem>
-                <MenuItem onClick={handleClose}>{"Delete"}</MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setConfirmOpen(true);
+                  }}
+                >
+                  {"Delete"}
+                </MenuItem>
+
+                {/* delete confirmation dialog */}
+                <Dialog
+                  open={confirmOpen}
+                  onClose={() => setConfirmOpen(false)}
+                >
+                  <DialogTitle>{"Delete Comment"}</DialogTitle>
+
+                  <DialogContent>
+                    <DialogContentText whiteSpace={"pre-line"}>
+                      {
+                        "Are you sure you want to delete this comment?\nThis action cannot be undone."
+                      }
+                    </DialogContentText>
+                  </DialogContent>
+
+                  <DialogActions>
+                    <Button
+                      onClick={() => {
+                        setConfirmOpen(false);
+                        handleClose();
+                      }}
+                    >
+                      {"Cancel"}
+                    </Button>
+
+                    <Button color="error" onClick={handleDelete}>
+                      {"Delete"}
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </Menu>
             </>
           )}

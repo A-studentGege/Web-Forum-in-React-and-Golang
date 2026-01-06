@@ -5,7 +5,12 @@ import LoadingState from "../states/LoadingState";
 import CommentItem from "./CommentItem";
 import NoComments from "./NoComments";
 
-export default function CommentList({ refreshKey }: { refreshKey: number }) {
+type Props = {
+  refreshKey: number;
+  onCommentDeleted: () => void;
+};
+
+export default function CommentList({ refreshKey, onCommentDeleted }: Props) {
   const { postID } = useParams<{ postID: string }>();
   const { comments, loading } = useCommentsByPostID(postID, refreshKey);
 
@@ -20,7 +25,11 @@ export default function CommentList({ refreshKey }: { refreshKey: number }) {
   return (
     <>
       {comments.map((comment) => (
-        <CommentItem key={comment.id} comment={comment} />
+        <CommentItem
+          key={comment.id}
+          comment={comment}
+          onDeleted={onCommentDeleted} // signal upward to CommentSection to refresh comment list
+        />
       ))}
     </>
   );

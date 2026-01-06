@@ -28,3 +28,13 @@ export async function createComment(
     throw new Error("Failed to create comment");
   }
 }
+
+export async function deleteComment(commentId : number, token : string) {
+  const res = await await fetch(`${BASE_URL}/comments/${commentId}`,{
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  if (!res.ok) throw new Error("Failed to delete comments");
+}
