@@ -2,6 +2,7 @@ package models
 
 import (
 	"time"
+	"errors"
 
 	"github.com/A-studentGege/backend-go/internal/db"
 )
@@ -106,4 +107,27 @@ func CreatePost(authorID int, title string, content string, topicID int) (int, e
     }
 
     return lastInsertID, nil
+}
+
+func DeletePost(authorID int, postID int) error {
+	// check whether author owns this post and delete
+	result, err := db.DB.Exec(`
+		DELETE FROM posts
+		WHERE id = $1 AND author_id = $2`, 
+		postID, authorID)
+
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return errors.New("post not found or not owned by user")
+	}
+
+	return nil
 }

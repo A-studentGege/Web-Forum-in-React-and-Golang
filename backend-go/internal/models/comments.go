@@ -2,6 +2,7 @@ package models
 
 import (
 	"time"
+	"errors"
 	
 	"github.com/A-studentGege/backend-go/internal/db"
 )
@@ -57,4 +58,27 @@ func CreateComment(authorID int, postID int, content string) (int, error){
     }
 
     return lastInsertID, nil
+}
+
+func DeleteComment(authorID int, commentID int) error {
+	// check whether author owns this comment and delete
+	result, err := db.DB.Exec(`
+		DELETE FROM comments
+		WHERE id = $1 AND author_id = $2`, 
+		commentID, authorID)
+
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return errors.New("comment not found or not owned by user")
+	}
+
+	return nil
 }

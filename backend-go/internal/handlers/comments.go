@@ -11,10 +11,11 @@ import (
 	"github.com/go-chi/chi/v5"	
 )
 
-type CreateCommentRequest struct {
+type createCommentRequest struct {
     Content  string `json:"content"`
     PostID  int    `json:"post_id"`
 }
+
 
 func GetCommentsByPostID(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
@@ -51,7 +52,7 @@ func CreateComment(w http.ResponseWriter, r *http.Request){
 	}
 
 	// decode json body to get values
-	var req CreateCommentRequest
+	var req createCommentRequest
     err = json.NewDecoder(r.Body).Decode(&req)
     if err != nil {
         http.Error(w, "Invalid request body", http.StatusBadRequest)
@@ -74,4 +75,30 @@ func CreateComment(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(http.StatusCreated)
     json.NewEncoder(w).Encode(map[string]int{"id": newID})
+}
+
+func DeleteComment(w http.ResponseWriter, r *http.Request){
+	// retrieve user id from auth middleware extraction 
+	authorID, ok := r.Context().Value(auth.UserIDKey).(int)
+    if !ok {
+        http.Error(w, "User identity not found", http.StatusInternalServerError)
+        return
+    }
+
+	// get comment id from url param 
+	commentIDStr := chi.URLParam(r, "id")
+	commentID, err := strconv.Atoi(commentIDStr)
+	if err != nil {
+		http.Error(w, "Invalid comment ID", http.StatusBadRequest)
+		return
+	}
+
+	err = models.DeleteComment(authorID, commentID)
+	if err != nil {
+		// http.Error(w, err.Error(), http.StatusForbidden)
+		log.Printf("error: %v", err)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }

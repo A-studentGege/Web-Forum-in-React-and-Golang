@@ -98,3 +98,28 @@ func CreatePost(w http.ResponseWriter, r *http.Request){
     w.WriteHeader(http.StatusCreated)
     json.NewEncoder(w).Encode(map[string]int{"id": newID})
 }
+
+func DeletePost(w http.ResponseWriter, r *http.Request) {
+	// retrieve user id from auth middleware extraction 
+	authorID, ok := r.Context().Value(auth.UserIDKey).(int)
+    if !ok {
+        http.Error(w, "User identity not found", http.StatusInternalServerError)
+        return
+    }
+
+	// get post id from url param 
+	postIDStr := chi.URLParam(r, "id")
+	postID, err := strconv.Atoi(postIDStr)
+	if err != nil {
+		http.Error(w, "Invalid comment ID", http.StatusBadRequest)
+		return
+	}
+
+	err = models.DeletePost(authorID, postID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusForbidden)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}

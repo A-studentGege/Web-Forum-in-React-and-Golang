@@ -40,9 +40,14 @@ func SetupRoutes() *chi.Mux {
 		r.Get("/{id}/comments", handlers.GetCommentsByPostID) // get a post's comments by post id 
 		r.Get("/topic/{topicID}", handlers.GetPostsByTopicID) // get posts filtered by topic
 
-		r.Post("/", auth.AuthMiddleware(handlers.CreatePost))
-		r.Post("/{id}/comments", auth.AuthMiddleware(handlers.CreateComment))
+		r.Post("/", auth.AuthMiddleware(handlers.CreatePost)) // create a new post
+		r.Post("/{id}/comments", auth.AuthMiddleware(handlers.CreateComment)) // create a comment under the post
 		
+		r.Delete("/{id}", auth.AuthMiddleware(handlers.DeletePost)) // delete a post
+	})
+
+	r.Route("/comments", func (r chi.Router){
+		r.Delete("/{id}", auth.AuthMiddleware(handlers.DeleteComment)) // delete a comment using its id
 	})
 
 	return r
