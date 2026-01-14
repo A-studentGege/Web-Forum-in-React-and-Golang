@@ -35,10 +35,13 @@ export default function PostView() {
       if (!postID) return;
 
       await deletePost(postID, token!);
-      navigate("/", {
-        replace: true,
-        state: { snackbar: "Post deleted successfully" }, // carry snackbar message
-      }); // direct to home page
+      navigate(
+        "/", // direct to home page
+        {
+          replace: true,
+          state: { snackbar: "Post deleted successfully" }, // carry snackbar message
+        }
+      );
     } catch (err) {
       console.error("Failed to delete post", err);
     }

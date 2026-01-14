@@ -59,7 +59,10 @@ export default function CreatePostForm() {
     setTitle("");
     setContent("");
 
-    navigate("/"); // direct back to home page
+    navigate("/", {
+      replace: true,
+      state: { snackbar: "Post created successfully" }, // carry snackbar message
+    }); // direct back to home page
   };
 
   return (

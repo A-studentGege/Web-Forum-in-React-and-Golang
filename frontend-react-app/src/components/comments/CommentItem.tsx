@@ -21,18 +21,11 @@ export default function CommentItem({ comment, onDeleted }: Props) {
   const { token, user, isAuthenticated } = useAuth();
   const isOwner = isAuthenticated && user?.id === comment.author_id;
 
-  // controls the confirm dialog
-  const [confirmOpen, setConfirmOpen] = React.useState(false);
-
   // controls comment option menu
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  // controls the confirm dialog
+  const [confirmOpen, setConfirmOpen] = React.useState(false);
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   // when user clicks delete, send delete req
   const handleDelete = async () => {

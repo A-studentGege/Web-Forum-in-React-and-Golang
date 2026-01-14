@@ -1,8 +1,6 @@
 import LatestPostList from "../components/posts/LatestPostList";
 import MainLayout from "./layout/MainLayout";
-
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
+import AppSnackbar from "../components/common/AppSnackBar";
 
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -27,20 +25,12 @@ export default function MainPage() {
   return (
     <MainLayout>
       <LatestPostList />
-      <Snackbar
+
+      <AppSnackbar
         open={snackbarOpen}
-        autoHideDuration={3000}
+        message={snackbarMessage}
         onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+      />
     </MainLayout>
   );
 }
