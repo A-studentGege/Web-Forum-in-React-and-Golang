@@ -4,22 +4,13 @@ import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 
 import React from "react";
 
 import { FormatDateHelper } from "../../utils/FormatDateHelper";
 import { useAuth } from "../../context/AuthContext";
 import { deleteComment } from "../../services/commentService";
+import CommentOptionsMenu from "./CommentOptionsMenu";
 
 type Props = {
   comment: Comment;
@@ -74,77 +65,7 @@ export default function CommentItem({ comment, onDeleted }: Props) {
           </Stack>
 
           {/* only show comment options if current user is the comment's owner */}
-          {isOwner && (
-            <>
-              <IconButton
-                aria-label="open comment options"
-                id="comment-option-button"
-                aria-controls={open ? "comment-option-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? "true" : undefined}
-                onClick={handleClick}
-              >
-                <MoreVertIcon />
-              </IconButton>
-              <Menu
-                id="comment-option-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                MenuListProps={{
-                  "aria-labelledby": "comment-option-button",
-                }}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "left",
-                }}
-                transformOrigin={{
-                  vertical: "center",
-                  horizontal: "right",
-                }}
-              >
-                <MenuItem onClick={handleClose}>{"Edit"}</MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    setConfirmOpen(true);
-                  }}
-                >
-                  {"Delete"}
-                </MenuItem>
-
-                {/* delete confirmation dialog */}
-                <Dialog
-                  open={confirmOpen}
-                  onClose={() => setConfirmOpen(false)}
-                >
-                  <DialogTitle>{"Delete Comment"}</DialogTitle>
-
-                  <DialogContent>
-                    <DialogContentText whiteSpace={"pre-line"}>
-                      {
-                        "Are you sure you want to delete this comment?\nThis action cannot be undone."
-                      }
-                    </DialogContentText>
-                  </DialogContent>
-
-                  <DialogActions>
-                    <Button
-                      onClick={() => {
-                        setConfirmOpen(false);
-                        handleClose();
-                      }}
-                    >
-                      {"Cancel"}
-                    </Button>
-
-                    <Button color="error" onClick={handleDelete}>
-                      {"Delete"}
-                    </Button>
-                  </DialogActions>
-                </Dialog>
-              </Menu>
-            </>
-          )}
+          {isOwner && <CommentOptionsMenu onDeleteConfirm={handleDelete} />}
         </Stack>
       </CardContent>
     </Card>

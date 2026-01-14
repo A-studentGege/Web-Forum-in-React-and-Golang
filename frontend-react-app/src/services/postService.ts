@@ -35,3 +35,13 @@ export async function createPost(
     throw new Error("Failed to create post");
   }
 }
+
+export async function deletePost(postId : string, token : string) {
+  const res = await await fetch(`${BASE_URL}/posts/${postId}`,{
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  if (!res.ok) throw new Error("Failed to delete post");
+}

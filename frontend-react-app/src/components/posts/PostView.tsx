@@ -4,35 +4,44 @@ import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
-import IconButton from "@mui/material/IconButton";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import LoadingState from "../states/LoadingState";
 import usePostByID from "../../hooks/usePostByID";
 import { useAuth } from "../../context/AuthContext";
+import PostOptionsMenu from "./PostOptionsMenu";
 
 import { FormatDateHelper } from "../../utils/FormatDateHelper";
+import { deletePost } from "../../services/postService";
 
 export default function PostView() {
+  const navigate = useNavigate();
   const { postID } = useParams<{ postID: string }>();
   const { post, loading } = usePostByID(postID);
-  const { user, isAuthenticated } = useAuth();
+  const { token, user, isAuthenticated } = useAuth();
   const isOwner =
     isAuthenticated && post !== null && user?.id === post.author_id;
 
-  // controls comment option menu
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
+  // controls the confirm dialog
+  const [confirmOpen, setConfirmOpen] = React.useState(false);
+
+  // when user clicks delete, send delete req
+  const handleDelete = async () => {
+    setConfirmOpen(false);
+
+    try {
+      if (!postID) return;
+
+      await deletePost(postID, token!);
+      navigate("/", {
+        replace: true,
+        state: { snackbar: "Post deleted successfully" }, // carry snackbar message
+      }); // direct to home page
+    } catch (err) {
+      console.error("Failed to delete post", err);
+    }
   };
 
   // if post is not ready, show loading for early return
@@ -57,40 +66,7 @@ export default function PostView() {
           </Typography>
 
           {/* only show post option menu when curr user is post owner */}
-          {isOwner && (
-            <>
-              <IconButton
-                aria-label="open post options"
-                id="post-option-button"
-                aria-controls={open ? "post-option-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? "true" : undefined}
-                onClick={handleClick}
-              >
-                <MoreVertIcon />
-              </IconButton>
-              <Menu
-                id="post-option-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                MenuListProps={{
-                  "aria-labelledby": "post-option-button",
-                }}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "left",
-                }}
-                transformOrigin={{
-                  vertical: "center",
-                  horizontal: "right",
-                }}
-              >
-                <MenuItem onClick={handleClose}>{"Edit"}</MenuItem>
-                <MenuItem onClick={handleClose}>{"Delete"}</MenuItem>
-              </Menu>
-            </>
-          )}
+          {isOwner && <PostOptionsMenu onDeleteConfirm={handleDelete} />}
         </Stack>
 
         <Divider />
