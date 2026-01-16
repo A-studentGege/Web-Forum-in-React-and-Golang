@@ -77,7 +77,31 @@ func DeleteComment(authorID int, commentID int) error {
 	}
 
 	if rowsAffected == 0 {
-		return errors.New("comment not found or not owned by user")
+		return errors.New("Comment not found or not owned by user")
+	}
+
+	return nil
+}
+
+func UpdateComment(authorID int, commentID int, content string) error {
+	// check if user owns this comment and update
+	result, err := db.DB.Exec(`
+		UPDATE comments
+		SET content = $1
+		WHERE id = $2 AND author_id = $3;`, 
+		content, commentID, authorID)
+
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return errors.New("Comment not found or not owned by user")
 	}
 
 	return nil

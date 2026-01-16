@@ -126,7 +126,31 @@ func DeletePost(authorID int, postID int) error {
 	}
 
 	if rowsAffected == 0 {
-		return errors.New("post not found or not owned by user")
+		return errors.New("Post not found or not owned by user")
+	}
+
+	return nil
+}
+
+func UpdatePost(authorID int, postID int, title string, content string) error {
+	// check whether author owns this post and update
+	result, err := db.DB.Exec(`
+		UPDATE posts
+		SET title = $1, content = $2
+		WHERE id = $3 AND author_id = $4;`, 
+		title, content, postID, authorID)
+
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return errors.New("Post not found or not owned by user")
 	}
 
 	return nil

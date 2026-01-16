@@ -16,6 +16,9 @@ type createCommentRequest struct {
     PostID  int    `json:"post_id"`
 }
 
+type updateCommentRequest struct {
+	Content	string `json:"content"`
+}
 
 func GetCommentsByPostID(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
@@ -95,8 +98,47 @@ func DeleteComment(w http.ResponseWriter, r *http.Request){
 
 	err = models.DeleteComment(authorID, commentID)
 	if err != nil {
-		// http.Error(w, err.Error(), http.StatusForbidden)
-		log.Printf("error: %v", err)
+		http.Error(w, err.Error(), http.StatusForbidden)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func UpdateComment(w http.ResponseWriter, r *http.Request){
+	// retrieve user id from auth middleware extraction 
+	authorID, ok := r.Context().Value(auth.UserIDKey).(int)
+    if !ok {
+        http.Error(w, "User identity not found", http.StatusInternalServerError)
+        return
+    }
+
+	// get comment id from url param 
+	commentIDStr := chi.URLParam(r, "id")
+	commentID, err := strconv.Atoi(commentIDStr)
+	if err != nil {
+		http.Error(w, "Invalid comment ID", http.StatusBadRequest)
+		return
+	}
+
+	// decode json body to get values
+	var req updateCommentRequest	
+    err = json.NewDecoder(r.Body).Decode(&req)
+    if err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
+
+	// validation to check if comment content is empty 
+	if req.Content == "" {
+        http.Error(w, "Content is required", http.StatusBadRequest)
+        return
+    }
+
+	// update comment 
+	err = models.UpdateComment(authorID, commentID, req.Content)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusForbidden)
 		return
 	}
 

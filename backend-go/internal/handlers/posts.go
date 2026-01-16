@@ -12,10 +12,15 @@ import (
 	
 )
 
-type CreatePostRequest struct {
+type createPostRequest struct {
     Title    string `json:"title"`
     Content  string `json:"content"`
     TopicID  int    `json:"topic_id"`
+}
+
+type updatePostRequest struct {
+	Title 	string 	`json:"title"`
+	Content string	`json:"content"`
 }
 
 func GetLatestPosts(w http.ResponseWriter, r *http.Request) {
@@ -74,7 +79,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request){
     }
 
 	// decode json body to get values
-	var req CreatePostRequest
+	var req createPostRequest
     err := json.NewDecoder(r.Body).Decode(&req)
     if err != nil {
         http.Error(w, "Invalid request body", http.StatusBadRequest)
@@ -111,11 +116,52 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	postIDStr := chi.URLParam(r, "id")
 	postID, err := strconv.Atoi(postIDStr)
 	if err != nil {
-		http.Error(w, "Invalid comment ID", http.StatusBadRequest)
+		http.Error(w, "Invalid post ID", http.StatusBadRequest)
 		return
 	}
 
+	// delete the post
 	err = models.DeletePost(authorID, postID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusForbidden)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func UpdatePost(w http.ResponseWriter, r *http.Request) {
+	// retrieve user id from auth middleware extraction 
+	authorID, ok := r.Context().Value(auth.UserIDKey).(int)
+    if !ok {
+        http.Error(w, "User identity not found", http.StatusInternalServerError)
+        return
+    }
+
+	// get post id from url param 
+	postIDStr := chi.URLParam(r, "id")
+	postID, err := strconv.Atoi(postIDStr)
+	if err != nil {
+		http.Error(w, "Invalid post ID", http.StatusBadRequest)
+		return
+	}
+
+	// decode json body to get values
+	var req updatePostRequest
+    err = json.NewDecoder(r.Body).Decode(&req)
+    if err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
+
+	// validation to check if title or content is empty 
+	if req.Title == "" || req.Content == "" {
+        http.Error(w, "Title and Content are required", http.StatusBadRequest)
+        return
+    }
+
+	// update the post 
+	err = models.UpdatePost(authorID, postID, req.Title, req.Content)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusForbidden)
 		return
