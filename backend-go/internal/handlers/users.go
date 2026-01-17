@@ -15,18 +15,13 @@ type User struct {
 	Username	string    `json:"username"`
 }
 
-
-func GetUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := models.GetAllUsers()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(users)
-}
-
+// GetUserByID handles GET /users/{id}
+// 
+// Response:
+//   200 OK 
+// 	 400 Bad request - invalid user id 
+//   500 Internal Server Error - database failure
+//
 func GetUserByID(w http.ResponseWriter, r *http.Request) {
 	// get "id" from path
 	idStr := chi.URLParam(r, "id")
@@ -38,7 +33,6 @@ func GetUserByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// call model (example)
 	user, err := models.GetUserByID(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -49,6 +43,13 @@ func GetUserByID(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
+// LoginHandler handles POST /login
+// 
+// Response:
+//   200 OK - successful login and returns a token
+// 	 400 Bad request - invalid request body
+//   500 Internal Server Error - database failure
+//
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 

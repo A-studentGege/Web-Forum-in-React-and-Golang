@@ -6,6 +6,16 @@ import {
   fetchTopicById,
 } from "../services/topicService";
 
+
+/**
+ * Fetch a list of posts based on a specific topic
+ * 
+ * @param topicId - ID for the topic
+ * @returns An object containing:
+ * - posts: A list of posts for a specific topic
+ * - loading: whether the posts are currently being loaded
+ * - error: error message if fetching fails
+ */
 export function usePostsByTopic(topicId?: string) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [topicName, setTopicName] = useState("");

@@ -11,6 +11,19 @@ import (
 
 var DB *sql.DB
 
+// Init initializes a global connection to postgresql database 
+// 
+// It reads database configuration from environment variables:
+//   - DB_HOST
+//   - DB_PORT
+//   - DB_USER
+//   - DB_PASSWORD
+//   - DB_NAME
+//
+// Init establishes the connection and verifies it with a ping.
+// The application will terminate if the connection cannot be established.
+//
+// This function should be called once during application startup. 
 func Init() {
 	var err error
 	

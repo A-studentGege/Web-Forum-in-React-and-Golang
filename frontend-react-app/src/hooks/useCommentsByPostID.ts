@@ -3,6 +3,16 @@ import Comment from "../types/Comment";
 import { useEffect, useState } from "react";
 import { getCommentsByPostID } from "../services/commentService";
 
+/**
+ * React hook to fetch a list of comments for a specific post
+ * 
+ * @param postId - ID for the post
+ * @param refreshKey - Optional value to force re-fetch when changed
+ * @returns An object containing:
+ * - comments: list of comments for the post
+ * - loading: whether the comments are currently being loaded
+ * - error: error message if fetching fails
+ */
 export default function useCommentsByPostID(postId?: string, refreshKey?: number){
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +29,7 @@ export default function useCommentsByPostID(postId?: string, refreshKey?: number
       .then(setComments)
       .catch(() => setError("Failed to load the comments of the post"))
       .finally(() => setLoading(false));
-  }, [postId, refreshKey]); // hook runs again when refreshKey changes to get comment list
+  }, [postId, refreshKey]); // hook re-runs when postId/refreshKey changes 
 
   return { comments, loading, error };
 }

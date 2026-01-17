@@ -2,11 +2,11 @@ package models
 
 import (
 	"time"
-	"errors"
 
 	"github.com/A-studentGege/backend-go/internal/db"
 )
 
+// Post represents a post made by a user on a topic
 type Post struct {
 	ID    int    `json:"id"`
 	Title  string `json:"title"`
@@ -17,6 +17,7 @@ type Post struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+// GetLatestPosts returns all posts in reverse chronological order
 func GetLatestPosts() ([]Post, error) {
 	rows, err := db.DB.Query(
 		`SELECT p.id, p.title, p.content, t.name, u.username, u.id, p.created_at 
@@ -33,7 +34,14 @@ func GetLatestPosts() ([]Post, error) {
 	var posts []Post
 	for rows.Next() {
 		var p Post
-		if err := rows.Scan(&p.ID, &p.Title, &p.Content,&p.Topic,&p.Author, &p.AuthorID, &p.CreatedAt); err != nil {
+		if err := rows.Scan(&p.ID, 
+							&p.Title, 
+							&p.Content,
+							&p.Topic,
+							&p.Author, 
+							&p.AuthorID, 
+							&p.CreatedAt,
+		); err != nil {
 			return nil, err
 		}
 		posts = append(posts, p)
@@ -42,6 +50,7 @@ func GetLatestPosts() ([]Post, error) {
 	return posts, nil
 }
 
+// GetPostsByTopicID returns posts associated with a given topic ID
 func GetPostsByTopicID(topicID int) ([]Post, error) {
 	rows, err := db.DB.Query(
 		`SELECT p.id, p.title, p.content, t.name as topic, u.username, u.id, p.created_at 
@@ -59,7 +68,14 @@ func GetPostsByTopicID(topicID int) ([]Post, error) {
 	var posts []Post
 	for rows.Next() {
 		var p Post
-		if err := rows.Scan(&p.ID, &p.Title, &p.Content,&p.Topic,&p.Author, &p.AuthorID, &p.CreatedAt); err != nil {
+		if err := rows.Scan(&p.ID, 
+							&p.Title, 
+							&p.Content,
+							&p.Topic,
+							&p.Author, 
+							&p.AuthorID, 
+							&p.CreatedAt,
+		); err != nil {
 			return nil, err
 		}
 		posts = append(posts, p)
@@ -68,6 +84,7 @@ func GetPostsByTopicID(topicID int) ([]Post, error) {
 	return posts, nil
 }
 
+// GetPostByID returns a Post object by its ID
 func GetPostByID(id int) (*Post, error) {
 	rows, err := db.DB.Query(
 		`SELECT p.id, p.title, p.content, t.name as topic, u.username, u.id, p.created_at 
@@ -84,7 +101,14 @@ func GetPostByID(id int) (*Post, error) {
 
 	var p Post
 	for rows.Next() {
-		if err := rows.Scan(&p.ID, &p.Title, &p.Content,&p.Topic,&p.Author, &p.AuthorID,  &p.CreatedAt); err != nil {
+		if err := rows.Scan(&p.ID, 
+							&p.Title, 
+							&p.Content,
+							&p.Topic,
+							&p.Author, 
+							&p.AuthorID,  
+							&p.CreatedAt,
+		); err != nil {
 			return nil, err
 		}
 	}
@@ -92,6 +116,8 @@ func GetPostByID(id int) (*Post, error) {
 	return &p, nil // return a single post object
 }
 
+// CreatePost creates a new post authored by the given user
+// returns the ID of newly created post
 func CreatePost(authorID int, title string, content string, topicID int) (int, error) {
 	var lastInsertID int
 	
@@ -109,6 +135,8 @@ func CreatePost(authorID int, title string, content string, topicID int) (int, e
     return lastInsertID, nil
 }
 
+// DeletePost deletes a post if it's owned by the given user
+// returns an error if the post does not exist or the user is not authorized 
 func DeletePost(authorID int, postID int) error {
 	// check whether author owns this post and delete
 	result, err := db.DB.Exec(`
@@ -126,12 +154,30 @@ func DeletePost(authorID int, postID int) error {
 	}
 
 	if rowsAffected == 0 {
-		return errors.New("Post not found or not owned by user")
+		// check if post exists to determine error type
+		var exists bool
+
+		err := db.DB.QueryRow(
+			`SELECT EXISTS(SELECT 1 FROM posts WHERE id = $1)`,
+			postID,
+		).Scan(&exists)
+
+		if err != nil {
+			return err
+		}
+
+		if !exists {
+			return ErrNotFound
+		}
+
+		return ErrForbidden
 	}
 
 	return nil
 }
 
+// UpdatePost updates a post if it's owned by the given user
+// returns an error if the post does not exist or the user is not authorized 
 func UpdatePost(authorID int, postID int, title string, content string) error {
 	// check whether author owns this post and update
 	result, err := db.DB.Exec(`
@@ -150,7 +196,23 @@ func UpdatePost(authorID int, postID int, title string, content string) error {
 	}
 
 	if rowsAffected == 0 {
-		return errors.New("Post not found or not owned by user")
+		// check if post exists to determine error type
+		var exists bool
+
+		err := db.DB.QueryRow(
+			`SELECT EXISTS(SELECT 1 FROM posts WHERE id = $1)`,
+			postID,
+		).Scan(&exists)
+
+		if err != nil {
+			return err
+		}
+
+		if !exists {
+			return ErrNotFound
+		}
+
+		return ErrForbidden
 	}
 
 	return nil

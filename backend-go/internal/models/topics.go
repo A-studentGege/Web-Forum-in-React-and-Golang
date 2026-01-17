@@ -4,11 +4,13 @@ import (
 	"github.com/A-studentGege/backend-go/internal/db"
 )
 
+// Topic represent a topic (a category) for posts
 type Topic struct {
 	ID    int    `json:"id"`
 	Name  string `json:"name"`
 }
 
+// GetAllTopics returns a list of all topics 
 func GetAllTopics() ([]Topic, error) {
 	rows, err := db.DB.Query(
 		"SELECT id, name FROM topics",
@@ -30,6 +32,7 @@ func GetAllTopics() ([]Topic, error) {
 	return topics, nil
 }
 
+// GetTopicNameByID returns topic name associated with a given topic ID 
 func GetTopicNameByID(id int) (*Topic, error) {
 	row := db.DB.QueryRow(
 		"SELECT id, name FROM Topics WHERE id = $1",

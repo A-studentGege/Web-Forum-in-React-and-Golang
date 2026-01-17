@@ -14,6 +14,7 @@ import (
 type contextKey string
 const UserIDKey contextKey = "userID"
 
+// AuthMiddleware verifies user's JWT token and extracts user ID from the claim
 func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
 		// get the jwt token from header
