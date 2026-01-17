@@ -1,4 +1,4 @@
-export function FormatDateHelper(date: Date): string {
+export function formatDateHelper(date: Date): string {
   const hours24 = date.getHours();
   const minutes = date.getMinutes();
 

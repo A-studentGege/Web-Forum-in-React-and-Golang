@@ -1,4 +1,4 @@
-export function MakePostPreview(
+export function makePostPreview(
   content: string,
   maxWords: number = 50
 ): string {

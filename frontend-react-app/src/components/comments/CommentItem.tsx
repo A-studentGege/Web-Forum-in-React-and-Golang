@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 
 import React from "react";
 
-import { FormatDateHelper } from "../../utils/FormatDateHelper";
+import { formatDateHelper } from "../../utils/formatDateHelper";
 import { useAuth } from "../../context/AuthContext";
 import { deleteComment, updateComment } from "../../services/commentService";
 import CommentOptionsMenu from "./CommentOptionsMenu";
@@ -66,7 +66,7 @@ export default function CommentItem({ comment, onDeleted, onUpdated }: Props) {
             </Typography>
             <Typography variant="caption">~ {comment.author}</Typography>
             <Typography variant="caption">
-              At {FormatDateHelper(new Date(comment.created_at))}
+              At {formatDateHelper(new Date(comment.created_at))}
             </Typography>
           </Stack>
 

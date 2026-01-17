@@ -1,5 +1,3 @@
-import { ChipProps } from "@mui/material/Chip";
-
 type Post = {
   id: number;
   author: string;
@@ -7,8 +5,7 @@ type Post = {
   title: string;
   content: string;
   topic: string;
-  // topicColor: ChipProps["color"];
-  // topicColor: string;
+  topic_color: string;
   created_at: Date;
 };
 

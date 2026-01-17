@@ -13,8 +13,9 @@ import usePostByID from "../../hooks/usePostByID";
 import { useAuth } from "../../context/AuthContext";
 import PostOptionsMenu from "./PostOptionsMenu";
 
-import { FormatDateHelper } from "../../utils/FormatDateHelper";
+import { formatDateHelper } from "../../utils/formatDateHelper";
 import { deletePost, updatePost } from "../../services/postService";
+import { getContrastTextColor } from "../../utils/getContrastTextColor";
 
 type Props = {
   onPostUpdated: () => void;
@@ -81,7 +82,15 @@ export default function PostView({ onPostUpdated }: Props) {
         >
           <Typography variant="h4" component="h1">
             {post.title}
-            <Chip label={post.topic} color={"primary"} sx={{ ml: 1 }} />
+
+            <Chip
+              label={post.topic}
+              sx={{
+                backgroundColor: post.topic_color,
+                color: getContrastTextColor(post.topic_color),
+                ml: 1,
+              }}
+            />
             {/* for long title, chip still sticks at the end of text */}
           </Typography>
 
@@ -109,7 +118,7 @@ export default function PostView({ onPostUpdated }: Props) {
         <Stack direction={"column"} alignItems={"end"}>
           <Typography variant="caption">{"~ " + post.author}</Typography>
           <Typography variant="caption">
-            At {FormatDateHelper(new Date(post.created_at))}
+            At {formatDateHelper(new Date(post.created_at))}
           </Typography>
         </Stack>
       </CardContent>

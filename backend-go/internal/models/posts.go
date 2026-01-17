@@ -12,6 +12,7 @@ type Post struct {
 	Title  string `json:"title"`
 	Content string `json:"content"`
 	Topic string `json:"topic"`
+	TopicColor string `json:"topic_color"` // represent the tag color
 	Author string `json:"author"`
 	AuthorID int `json:"author_id"`
 	CreatedAt time.Time `json:"created_at"`
@@ -20,7 +21,7 @@ type Post struct {
 // GetLatestPosts returns all posts in reverse chronological order
 func GetLatestPosts() ([]Post, error) {
 	rows, err := db.DB.Query(
-		`SELECT p.id, p.title, p.content, t.name, u.username, u.id, p.created_at 
+		`SELECT p.id, p.title, p.content, t.name, t.color, u.username, u.id, p.created_at 
 		FROM posts p
 		JOIN users u ON p.author_id = u.id
 	 	JOIN topics t ON p.topic_id = t.id
@@ -38,6 +39,7 @@ func GetLatestPosts() ([]Post, error) {
 							&p.Title, 
 							&p.Content,
 							&p.Topic,
+							&p.TopicColor,
 							&p.Author, 
 							&p.AuthorID, 
 							&p.CreatedAt,
@@ -53,7 +55,7 @@ func GetLatestPosts() ([]Post, error) {
 // GetPostsByTopicID returns posts associated with a given topic ID
 func GetPostsByTopicID(topicID int) ([]Post, error) {
 	rows, err := db.DB.Query(
-		`SELECT p.id, p.title, p.content, t.name as topic, u.username, u.id, p.created_at 
+		`SELECT p.id, p.title, p.content, t.name as topic, t.color, u.username, u.id, p.created_at 
 		FROM posts p
 		JOIN users u ON p.author_id = u.id
 	 	JOIN topics t ON p.topic_id = t.id
@@ -72,6 +74,7 @@ func GetPostsByTopicID(topicID int) ([]Post, error) {
 							&p.Title, 
 							&p.Content,
 							&p.Topic,
+							&p.TopicColor,
 							&p.Author, 
 							&p.AuthorID, 
 							&p.CreatedAt,
@@ -87,7 +90,7 @@ func GetPostsByTopicID(topicID int) ([]Post, error) {
 // GetPostByID returns a Post object by its ID
 func GetPostByID(id int) (*Post, error) {
 	rows, err := db.DB.Query(
-		`SELECT p.id, p.title, p.content, t.name as topic, u.username, u.id, p.created_at 
+		`SELECT p.id, p.title, p.content, t.name as topic, t.color, u.username, u.id, p.created_at 
 		FROM posts p
 		JOIN users u ON p.author_id = u.id
 	 	JOIN topics t ON p.topic_id = t.id
@@ -105,6 +108,7 @@ func GetPostByID(id int) (*Post, error) {
 							&p.Title, 
 							&p.Content,
 							&p.Topic,
+							&p.TopicColor,
 							&p.Author, 
 							&p.AuthorID,  
 							&p.CreatedAt,

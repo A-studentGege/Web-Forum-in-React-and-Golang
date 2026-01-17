@@ -8,7 +8,8 @@ import Link from "@mui/material/Link";
 
 import React from "react";
 
-import { MakePostPreview } from "../../utils/MakePostPreview";
+import { makePostPreview } from "../../utils/makePostPreview";
+import { getContrastTextColor } from "../../utils/getContrastTextColor";
 
 type Props = {
   post: Post;
@@ -25,11 +26,18 @@ export default function PostListItem({ post }: Props) {
               {post.title}
             </Link>
           </Typography>
-          <Chip label={post.topic} color={"primary"} sx={{ ml: 1 }} />
-          {/* <Chip label={post.topic} sx={{ ml: 1, backgroundColor: post.topicColor, color: "#fff" }} /> */}
+
+          <Chip
+            label={post.topic}
+            sx={{
+              backgroundColor: post.topic_color,
+              color: getContrastTextColor(post.topic_color),
+              ml: 1,
+            }}
+          />
         </Stack>
 
-        <Typography variant="body2">{MakePostPreview(post.content)}</Typography>
+        <Typography variant="body2">{makePostPreview(post.content)}</Typography>
       </Card>
     </div>
   );
