@@ -9,20 +9,23 @@ import React from "react";
 
 import { FormatDateHelper } from "../../utils/FormatDateHelper";
 import { useAuth } from "../../context/AuthContext";
-import { deleteComment } from "../../services/commentService";
+import { deleteComment, updateComment } from "../../services/commentService";
 import CommentOptionsMenu from "./CommentOptionsMenu";
 
 type Props = {
   comment: Comment;
   onDeleted: () => void;
+  onUpdated: () => void;
 };
 
-export default function CommentItem({ comment, onDeleted }: Props) {
+export default function CommentItem({ comment, onDeleted, onUpdated }: Props) {
+  // extract auth info
   const { token, user, isAuthenticated } = useAuth();
   const isOwner = isAuthenticated && user?.id === comment.author_id;
 
   // controls comment option menu
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
   // controls the confirm dialog
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const open = Boolean(anchorEl);
@@ -36,6 +39,16 @@ export default function CommentItem({ comment, onDeleted }: Props) {
       onDeleted(); // trigger refresh on parent component CommentList
     } catch (err) {
       console.error("Failed to delete comment", err);
+    }
+  };
+
+  // when user clicks edit, send update req
+  const handleEdit = async (content: string) => {
+    try {
+      await updateComment(comment.id, token!, { content: content });
+      onUpdated();
+    } catch (err) {
+      console.error("Failed to update comment", err);
     }
   };
 
@@ -58,7 +71,13 @@ export default function CommentItem({ comment, onDeleted }: Props) {
           </Stack>
 
           {/* only show comment options if current user is the comment's owner */}
-          {isOwner && <CommentOptionsMenu onDeleteConfirm={handleDelete} />}
+          {isOwner && (
+            <CommentOptionsMenu
+              onDeleteConfirm={handleDelete}
+              onEditConfirm={handleEdit}
+              commentContent={comment.content}
+            />
+          )}
         </Stack>
       </CardContent>
     </Card>

@@ -8,11 +8,16 @@ import NoComments from "./NoComments";
 type Props = {
   refreshKey: number;
   onCommentDeleted: () => void;
+  onCommentUpdated: () => void;
 };
 
-export default function CommentList({ refreshKey, onCommentDeleted }: Props) {
+export default function CommentList({
+  refreshKey,
+  onCommentDeleted,
+  onCommentUpdated,
+}: Props) {
   const { postID } = useParams<{ postID: string }>();
-  const { comments, loading } = useCommentsByPostID(postID, refreshKey);
+  const { comments, loading } = useCommentsByPostID(postID, refreshKey); // retrieve comment list for the post
 
   if (loading) {
     return <LoadingState message="looking for the post..." />;
@@ -29,6 +34,7 @@ export default function CommentList({ refreshKey, onCommentDeleted }: Props) {
           key={comment.id}
           comment={comment}
           onDeleted={onCommentDeleted} // signal upward to CommentSection to refresh comment list
+          onUpdated={onCommentUpdated}
         />
       ))}
     </>

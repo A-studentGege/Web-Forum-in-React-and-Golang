@@ -8,17 +8,36 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 
 import { useState } from "react";
 
 type Props = {
   onDeleteConfirm: () => void;
+  onEditConfirm: (newTitle: string, newContent: string) => void;
+  postTitle: string;
+  postContent: string;
 };
 
-export default function PostOptionsMenu({ onDeleteConfirm }: Props) {
+export default function PostOptionsMenu({
+  onDeleteConfirm,
+  onEditConfirm,
+  postTitle,
+  postContent,
+}: Props) {
+  // controls the option menu expanding
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  // controls delete/update dialog opening
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+
+  // initialize post title and content var
+  const [title, setTitle] = useState(postTitle);
+  const [content, setContent] = useState(postContent);
+
+  // close the menu
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -29,8 +48,16 @@ export default function PostOptionsMenu({ onDeleteConfirm }: Props) {
         <MoreVertIcon />
       </IconButton>
 
+      {/* option menu */}
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <MenuItem onClick={handleClose}>{"Edit"}</MenuItem>
+        <MenuItem
+          onClick={() => {
+            setAnchorEl(null);
+            setEditOpen(true);
+          }}
+        >
+          {"Edit"}
+        </MenuItem>
 
         <MenuItem
           onClick={() => {
@@ -42,6 +69,46 @@ export default function PostOptionsMenu({ onDeleteConfirm }: Props) {
         </MenuItem>
       </Menu>
 
+      {/* dialog for editing comment */}
+      <Dialog open={editOpen} onClose={() => setEditOpen(false)} fullWidth>
+        <DialogTitle>{"Edit your post"}</DialogTitle>
+        <DialogContent>
+          <TextField
+            variant="standard"
+            label="Post Title"
+            fullWidth
+            multiline
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            sx={{ mb: 2 }}
+          ></TextField>
+
+          <TextField
+            variant="standard"
+            label="Body"
+            autoFocus
+            fullWidth
+            multiline
+            minRows={5}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditOpen(false)}>{"Cancel"}</Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              onEditConfirm(title, content);
+              setEditOpen(false);
+            }}
+          >
+            {"Save"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* dialog for delete post */}
       <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
         <DialogTitle>{"Delete Post"}</DialogTitle>
         <DialogContent>
@@ -54,7 +121,7 @@ export default function PostOptionsMenu({ onDeleteConfirm }: Props) {
         <DialogActions>
           <Button onClick={() => setConfirmOpen(false)}>{"Cancel"}</Button>
           <Button color="error" onClick={onDeleteConfirm}>
-            Delete
+            {"Delete"}
           </Button>
         </DialogActions>
       </Dialog>

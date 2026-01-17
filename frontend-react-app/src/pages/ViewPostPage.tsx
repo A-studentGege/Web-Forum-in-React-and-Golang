@@ -20,7 +20,7 @@ export default function ViewPostPage() {
   return (
     <MainLayout>
       <Stack direction={"column"} spacing={1}>
-        <PostView />
+        <PostView onPostUpdated={() => showSnackbar("Post updated")} />
         <CommentSection
           onCommentDeleted={() => showSnackbar("Comment deleted")}
         />

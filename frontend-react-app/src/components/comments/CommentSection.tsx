@@ -25,6 +25,7 @@ export default function CommentSection({ onCommentDeleted }: Props) {
       <CommentList
         refreshKey={refreshKey}
         onCommentDeleted={handleCommentDeleted}
+        onCommentUpdated={() => setRefreshKey((k) => k + 1)} // refresh comment section
       />
     </>
   );

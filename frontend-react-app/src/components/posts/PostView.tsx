@@ -14,12 +14,16 @@ import { useAuth } from "../../context/AuthContext";
 import PostOptionsMenu from "./PostOptionsMenu";
 
 import { FormatDateHelper } from "../../utils/FormatDateHelper";
-import { deletePost } from "../../services/postService";
+import { deletePost, updatePost } from "../../services/postService";
 
-export default function PostView() {
+type Props = {
+  onPostUpdated: () => void;
+};
+
+export default function PostView({ onPostUpdated }: Props) {
   const navigate = useNavigate();
   const { postID } = useParams<{ postID: string }>();
-  const { post, loading } = usePostByID(postID);
+  const { post, loading, refresh } = usePostByID(postID);
   const { token, user, isAuthenticated } = useAuth();
   const isOwner =
     isAuthenticated && post !== null && user?.id === post.author_id;
@@ -47,6 +51,19 @@ export default function PostView() {
     }
   };
 
+  // handles post update req
+  const handleUpdate = async (title: string, content: string) => {
+    try {
+      if (!postID) return;
+
+      await updatePost(postID, token!, { content: content, title: title });
+      onPostUpdated(); // trigger snackbar msg
+      refresh(); // refresh post details
+    } catch (err) {
+      console.error("Failed to update post", err);
+    }
+  };
+
   // if post is not ready, show loading for early return
   if (!post || loading) {
     return <LoadingState message="looking for the post..." />;
@@ -69,7 +86,14 @@ export default function PostView() {
           </Typography>
 
           {/* only show post option menu when curr user is post owner */}
-          {isOwner && <PostOptionsMenu onDeleteConfirm={handleDelete} />}
+          {isOwner && (
+            <PostOptionsMenu
+              onDeleteConfirm={handleDelete}
+              onEditConfirm={handleUpdate}
+              postTitle={post.title}
+              postContent={post.content}
+            />
+          )}
         </Stack>
 
         <Divider />
