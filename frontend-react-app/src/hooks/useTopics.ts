@@ -16,12 +16,21 @@ export function useTopics() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // handle topic list refresh
+  const [refreshKey, setRefreshKey] = useState(0);
+  const handleRefresh = () => {
+    setRefreshKey((k) => k + 1);
+  };
+
   useEffect(() => {
+    setLoading(true);
+    setError(null);
+
     fetchTopics()
       .then(setTopics)
       .catch(() => setError("Failed to load topics"))
       .finally(() => setLoading(false));
-  }, []);
+  }, [refreshKey]);
 
-  return { topics, loading, error };
+  return { topics, loading, error, refetch: handleRefresh };
 }

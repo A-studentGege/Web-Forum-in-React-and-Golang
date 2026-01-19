@@ -1,16 +1,17 @@
-import Topic from "../../types/Topic";
-
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
+import Button from "@mui/material/Button";
 
 import TopicListItem from "./TopicListItem";
+import TopicManageList from "./TopicManageList";
+import { useTopics } from "../../hooks/useTopics";
+import { useAuth } from "../../context/AuthContext";
 
 const style = {
   width: 400,
@@ -24,24 +25,19 @@ const style = {
 };
 
 export default function TopicBar() {
+  const { topics, refetch } = useTopics();
+  const { user } = useAuth();
+  const isAdmin = user?.is_admin === true;
+
   // control all topic list opening
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const [topics, setTopics] = useState<Topic[]>([]);
-
-  // fetch topics from db
-  useEffect(() => {
-    fetch("http://localhost:8080/topics")
-      .then((res) => res.json())
-      .then((data) => {
-        setTopics(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
+  // control manage topic modal open
+  const [manageOpen, setManageOpen] = useState(false);
+  const handleManageOpen = () => setManageOpen(true);
+  const handleManageClose = () => setManageOpen(false);
 
   return (
     <Card variant="outlined" sx={{ position: "sticky", top: 10 }}>
@@ -64,10 +60,11 @@ export default function TopicBar() {
           ))}
         </List>
 
+        <Button onClick={handleOpen} color={"inherit"}>
+          {"- All topics -"}
+        </Button>
+
         <div>
-          <Link href="#" onClick={handleOpen} underline="hover" color={"black"}>
-            <Typography>{"- All topics -"}</Typography>
-          </Link>
           <Modal
             open={open}
             onClose={handleClose}
@@ -102,6 +99,21 @@ export default function TopicBar() {
             </Box>
           </Modal>
         </div>
+
+        {/* admin-only topic management modal */}
+        {isAdmin && (
+          <>
+            <Button variant="contained" onClick={handleManageOpen}>
+              {"Manage Topics"}
+            </Button>
+            <TopicManageList
+              open={manageOpen}
+              onClose={handleManageClose}
+              topics={topics}
+              onRefresh={refetch}
+            />
+          </>
+        )}
       </Stack>
     </Card>
   );

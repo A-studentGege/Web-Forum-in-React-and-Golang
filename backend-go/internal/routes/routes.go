@@ -30,7 +30,12 @@ func SetupRoutes() *chi.Mux {
 
 	r.Route("/topics", func (r chi.Router){
 		r.Get("/", handlers.GetTopics) // get all topic names
-		r.Get("/{topicID}", handlers.GetTopicNameByID) // get topic name by its id
+		r.Get("/{id}", handlers.GetTopicNameByID) // get topic name by its id
+		r.Post("/", auth.AuthMiddleware(auth.RequireAdmin(handlers.CreateTopic))) // create a new topic
+		r.Delete("/{id}", auth.AuthMiddleware(auth.RequireAdmin(handlers.DeleteTopic))) // delete a topic 
+
+		// r.POST("/", auth.AuthMiddleware(handlers.CreateTopic)) // create a new topic
+		// r.Delete("/{id}", auth.AuthMiddleware(handlers.DeleteTopic)) // delete a topic 
 	})
 
 	r.Route("/posts", func (r chi.Router){

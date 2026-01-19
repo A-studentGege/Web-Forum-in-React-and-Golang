@@ -39,3 +39,46 @@ export async function fetchPostsByTopicId(topicId: string): Promise<Post[]> {
   if (!res.ok) throw new Error("Failed to fetch posts by topic");
   return res.json();
 }
+
+/**
+ * Create a new topic
+ * 
+ * @param token - JWT token
+ * @param payload - new topic details (name and color hex code)
+ */
+export async function createTopic(
+  token: string,
+  payload: {
+    name : string,
+    color : string 
+  }
+) {
+  const res = await fetch(`${BASE_URL}/topics`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to create topic");
+  }
+}
+
+/**
+ * Delete an existing topic by its ID
+ * 
+ * @param token - JWT token
+ * @param topicId - ID of the topic
+ */
+export async function deleteTopic(token : string, topicId : number) {
+  const res = await await fetch(`${BASE_URL}/topics/${topicId}`,{
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  if (!res.ok) throw new Error("Failed to delete topic");
+}

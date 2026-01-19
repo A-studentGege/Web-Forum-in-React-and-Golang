@@ -12,8 +12,10 @@ import (
 // Define a custom type for context keys to avoid collisions
 // contextKey <- string (backed by string) but is a diff type, don't collide with other package
 type contextKey string
-const UserIDKey contextKey = "userID"
-
+const (
+    UserIDKey contextKey = "userID"
+    IsAdminKey contextKey = "isAdmin"
+)
 // AuthMiddleware verifies user's JWT token and extracts user ID from the claim
 func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
@@ -50,21 +52,23 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
             return
         }
 
-        idVal, ok := claims["id"]
+        // extract user id 
+        idVal, ok := claims["id"].(float64)
         if !ok {
-            http.Error(w, "Token missing user id", http.StatusUnauthorized)
+            http.Error(w, "Invalid user id", http.StatusUnauthorized)
             return
         }
-
-        userIDFloat, ok := idVal.(float64)
+        userID := int(idVal)
+        
+        // extract admin identity (is_admin) 
+        isAdmin, ok := claims["is_admin"].(bool)
         if !ok {
-            http.Error(w, "Invalid user id type", http.StatusUnauthorized)
-            return
+            isAdmin = false
         }
-
-        userID := int(userIDFloat)
 
         ctx := context.WithValue(r.Context(), UserIDKey, userID)
+        ctx = context.WithValue(ctx, IsAdminKey, isAdmin)
+
         next.ServeHTTP(w, r.WithContext(ctx))
     }
 }

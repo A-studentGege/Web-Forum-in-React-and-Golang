@@ -21,7 +21,7 @@ import (
 // provided via the JWT_SECRET environment variable.
 //
 // Returns an error if JWT_SECRET is not set or token signing fails.
-func CreateToken(user *models.User) (string, error) {
+func CreateToken(user *models.UserInternal) (string, error) {
 	// read jwt secret key at runtime 
 	secretKey := []byte(os.Getenv("JWT_SECRET"))
 	
@@ -33,6 +33,7 @@ func CreateToken(user *models.User) (string, error) {
 		jwt.MapClaims{
 			"username": user.Username,
 			"id": user.ID,
+			"is_admin": user.IsAdmin,
 			"exp":      time.Now().Add(time.Hour * 2).Unix(), // valid for 2hrs
 			"iat":      time.Now().Unix(),
 		})

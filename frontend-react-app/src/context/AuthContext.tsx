@@ -1,7 +1,8 @@
 import User from "../types/User";
 import AuthContextType from "../types/AuthContext";
+import { decodeToken } from "../utils/decodeToken";
 
-import React, {
+import {
   createContext,
   useContext,
   useState,
@@ -9,14 +10,12 @@ import React, {
   ReactNode,
 } from "react";
 
-import { decodeToken } from "../utils/decodeToken";
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(
-    localStorage.getItem("token")
+    localStorage.getItem("token"),
   );
 
   // Logic to persist login on page refresh
@@ -31,6 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser({
         id: decoded.id,
         username: decoded.username,
+        is_admin: decoded.is_admin,
       });
     }
   }, []);
@@ -46,14 +46,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       const data = await response.json();
 
-      if (response.ok) {
-        localStorage.setItem("token", data.token); // save token to local storage
-
-        setToken(data.token);
-        setUser({ id: data.id, username: data.username }); // set current user info
-      } else {
+      if (!response.ok) {
         throw new Error(data.message || "Login failed");
       }
+
+      // save token to local storage
+      localStorage.setItem("token", data.token);
+      setToken(data.token);
+
+      // decode token and set user state
+      const decoded = decodeToken(data.token);
+      setUser({
+        id: decoded.id,
+        username: decoded.username,
+        is_admin: decoded.is_admin,
+      });
     } catch (error) {
       console.error("Auth error:", error);
     }

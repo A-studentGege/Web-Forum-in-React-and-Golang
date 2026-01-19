@@ -7,19 +7,25 @@ import (
 )
 
 // User represents a user on the forum
-type User struct {
+type UserPublic struct {
 	ID    int    `json:"id"`
 	Username  string `json:"username"`
 }
 
+type UserInternal struct {
+	ID       int    `json:"id"`
+	Username string `json:"username"`
+	IsAdmin  bool   `json:"is_admin"`
+}
+
 // GetUserByID returns a user's id and username associated with a given user ID 
-func GetUserByID(id int) (*User, error) {
+func GetUserByID(id int) (*UserPublic, error) {
 	row := db.DB.QueryRow(
 		"SELECT id, username FROM users WHERE id = $1",
 		id,
 	)
 
-	var u User
+	var u UserPublic
 	if err := row.Scan(&u.ID, &u.Username); err != nil {
 		return nil, err
 	}
@@ -29,13 +35,13 @@ func GetUserByID(id int) (*User, error) {
 
 // LoginByusername logs user in by the given username
 // If user doesn't exist, will proceed to create a new user in createUser 
-func LoginByUsername(username string) (*User, error){
-	var u User
+func LoginByUsername(username string) (*UserInternal, error){
+	var u UserInternal
 	
 	err := db.DB.QueryRow(
-		`SELECT id, username FROM users WHERE username = $1`,
+		`SELECT id, username, is_admin FROM users WHERE username = $1`,
 		username,
-	).Scan(&u.ID, &u.Username)
+	).Scan(&u.ID, &u.Username, &u.IsAdmin)
 
 	if err == nil {
 		// if user already exists, let him login
@@ -52,8 +58,8 @@ func LoginByUsername(username string) (*User, error){
 }
 
 // createUser creates a new user with a given username
-func createUser(username string) (*User, error){
-	var u User
+func createUser(username string) (*UserInternal, error){
+	var u UserInternal
 
 	err := db.DB.QueryRow(
 		`INSERT INTO users (username)

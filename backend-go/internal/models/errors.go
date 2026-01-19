@@ -8,4 +8,6 @@ import (
 var (
 	ErrNotFound   = errors.New("Resource not found")
 	ErrForbidden  = errors.New("Forbidden")
+	ErrUnauthozied = errors.New("Unauthorized")
+	ErrAlreadyExists =  errors.New("Resource already exists")
 )
