@@ -1,7 +1,5 @@
-import CreatePostForm from "../components/CreatePostForm";
-import MainLayout from "./layout/MainLayout";
-
-import React from "react";
+import CreatePostForm from "@/components/CreatePostForm";
+import MainLayout from "@/pages/layout/MainLayout";
 
 export default function CreatePostPage() {
   return (

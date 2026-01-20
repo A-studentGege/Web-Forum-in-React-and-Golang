@@ -1,9 +1,9 @@
-import LatestPostList from "../components/posts/LatestPostList";
-import MainLayout from "./layout/MainLayout";
-import AppSnackbar from "../components/common/AppSnackBar";
-
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+
+import LatestPostList from "@/components/posts/LatestPostList";
+import MainLayout from "@/pages/layout/MainLayout";
+import AppSnackbar from "@/components/common/AppSnackBar";
 
 export default function MainPage() {
   const location = useLocation();

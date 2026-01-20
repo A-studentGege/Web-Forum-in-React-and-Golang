@@ -1,7 +1,8 @@
-import Topic from "../types/Topic";
-
 import { useState, useEffect } from "react";
-import { fetchTopics } from "../services/topicService";
+
+import { fetchTopics } from "@/services/topicService";
+
+import Topic from "@/types/Topic";
 
 /**
  * Fetch a list of topics

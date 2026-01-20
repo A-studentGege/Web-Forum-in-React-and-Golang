@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
-	"log"
 
 	"github.com/A-studentGege/backend-go/internal/models"
 	"github.com/A-studentGege/backend-go/internal/auth"
@@ -89,7 +88,6 @@ func CreateComment(w http.ResponseWriter, r *http.Request){
 
 	newID, err := models.CreateComment(authorID, postID, req.Content)
     if err != nil {
-        log.Printf("Database error: %v", err)
         http.Error(w, "Failed to create comment", http.StatusInternalServerError)
         return
     }

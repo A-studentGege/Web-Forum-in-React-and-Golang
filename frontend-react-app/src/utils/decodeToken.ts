@@ -7,6 +7,12 @@ interface JwtPayload {
   exp: number;
 }
 
+/**
+ * Decode the JWT token to get its claims/payload
+ * 
+ * @param token - JWT token
+ * @returns decoded token claims
+ */
 export function decodeToken(token: string): JwtPayload {
   return jwtDecode<JwtPayload>(token);
 }

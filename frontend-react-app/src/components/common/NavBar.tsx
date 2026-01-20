@@ -1,20 +1,20 @@
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import Divider from "@mui/material/Divider";
-import Link from "@mui/material/Link";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import InputBase from "@mui/material/InputBase";
+import {
+  styled,
+  Box,
+  Stack,
+  Divider,
+  Link,
+  Typography,
+  Button,
+  IconButton,
+  InputBase,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CreateIcon from "@mui/icons-material/Create";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import LogoutIcon from "@mui/icons-material/Logout";
 
-import { useAuth } from "../../context/AuthContext";
-
-import React from "react";
+import { useAuth } from "@/context/AuthContext";
 
 const Search = styled("div")(({ theme }) => ({
   display: "flex",
@@ -23,8 +23,12 @@ const Search = styled("div")(({ theme }) => ({
   marginLeft: theme.spacing(1),
 }));
 
+const btnStyle = {
+  textTransform: "none", // to disable all caps for button
+};
+
 export default function NavBar() {
-  const { isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
 
   return (
     <Box
@@ -56,7 +60,12 @@ export default function NavBar() {
 
         <Stack direction={"row"} alignContent={"end"}>
           {isAuthenticated && (
-            <Button variant="text" href="/create" endIcon={<CreateIcon />}>
+            <Button
+              variant="text"
+              href="/create"
+              sx={btnStyle}
+              endIcon={<CreateIcon />}
+            >
               {"Create"}
             </Button>
           )}
@@ -71,13 +80,23 @@ export default function NavBar() {
               {"Login"}
             </Button>
           ) : (
-            // else show profile and logout buttons
-            // **try show current username (GET /user/me)
+            // else show profile (username) and logout buttons
             <>
-              <Button variant="text" endIcon={<AccountBoxIcon />}>
-                {`Profile`}
+              <Button
+                variant="text"
+                color="inherit"
+                sx={btnStyle}
+                endIcon={<AccountBoxIcon />}
+              >
+                {"Hello, " + user?.username}
               </Button>
-              <Button variant="text" onClick={logout} endIcon={<LogoutIcon />}>
+              <Button
+                variant="text"
+                onClick={logout}
+                color="error"
+                sx={btnStyle}
+                endIcon={<LogoutIcon />}
+              >
                 {`Logout`}
               </Button>
             </>

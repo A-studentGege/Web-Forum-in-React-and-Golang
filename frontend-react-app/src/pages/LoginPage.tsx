@@ -1,10 +1,8 @@
-import Grid from "@mui/material/Grid";
+import { Grid } from "@mui/material";
 
-import Footer from "../components/common/Footer";
-import NavBar from "../components/common/NavBar";
-import LoginForm from "../components/LoginForm";
-
-import React from "react";
+import Footer from "@/components/common/Footer";
+import NavBar from "@/components/common/NavBar";
+import LoginForm from "@/components/LoginForm";
 
 export default function LoginPage() {
   return (

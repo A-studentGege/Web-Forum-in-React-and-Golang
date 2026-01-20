@@ -1,4 +1,4 @@
-import Post from "../types/Post";
+import Post from "@/types/Post";
 
 const BASE_URL = "http://localhost:8080";
 

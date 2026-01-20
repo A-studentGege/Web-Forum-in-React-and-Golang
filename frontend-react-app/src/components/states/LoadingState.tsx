@@ -1,8 +1,4 @@
-import CircularProgress from "@mui/material/CircularProgress";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-
-import React from "react";
+import { CircularProgress, Stack, Typography } from "@mui/material";
 
 type LoadingStateProps = {
   message?: string;

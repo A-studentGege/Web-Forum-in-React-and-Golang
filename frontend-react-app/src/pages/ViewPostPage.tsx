@@ -1,11 +1,11 @@
-import Stack from "@mui/material/Stack";
+import { useState } from "react";
 
-import PostView from "../components/posts/PostView";
-import MainLayout from "./layout/MainLayout";
-import AppSnackbar from "../components/common/AppSnackBar";
-import CommentSection from "../components/comments/CommentSection";
+import { Stack } from "@mui/material";
 
-import React, { useState } from "react";
+import PostView from "@/components/posts/PostView";
+import MainLayout from "@/pages/layout/MainLayout";
+import AppSnackbar from "@/components/common/AppSnackBar";
+import CommentSection from "@/components/comments/CommentSection";
 
 export default function ViewPostPage() {
   // controls snackbar showing

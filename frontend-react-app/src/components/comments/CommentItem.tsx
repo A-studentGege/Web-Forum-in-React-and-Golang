@@ -1,16 +1,12 @@
-import Comment from "../../types/Comment";
+import { Stack, Card, CardContent, Typography } from "@mui/material";
 
-import Stack from "@mui/material/Stack";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
+import { useAuth } from "@/context/AuthContext";
+import { formatDateHelper } from "@/utils/formatDateHelper";
+import { deleteComment, updateComment } from "@/services/commentService";
 
-import React from "react";
+import CommentOptionsMenu from "@/components/comments/CommentOptionsMenu";
 
-import { formatDateHelper } from "../../utils/formatDateHelper";
-import { useAuth } from "../../context/AuthContext";
-import { deleteComment, updateComment } from "../../services/commentService";
-import CommentOptionsMenu from "./CommentOptionsMenu";
+import Comment from "@/types/Comment";
 
 type Props = {
   comment: Comment;
@@ -23,17 +19,8 @@ export default function CommentItem({ comment, onDeleted, onUpdated }: Props) {
   const { token, user, isAuthenticated } = useAuth();
   const isOwner = isAuthenticated && user?.id === comment.author_id;
 
-  // controls comment option menu
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
-  // controls the confirm dialog
-  const [confirmOpen, setConfirmOpen] = React.useState(false);
-  const open = Boolean(anchorEl);
-
   // when user clicks delete, send delete req
   const handleDelete = async () => {
-    setConfirmOpen(false);
-
     try {
       await deleteComment(comment.id, token!);
       onDeleted(); // trigger refresh on parent component CommentList

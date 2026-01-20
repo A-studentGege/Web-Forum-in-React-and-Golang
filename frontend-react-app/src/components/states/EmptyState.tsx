@@ -1,7 +1,4 @@
-import Typography from "@mui/material/Typography";
-import Card from "@mui/material/Card";
-
-import React from "react";
+import { Typography, Card } from "@mui/material";
 
 type EmptyStateProps = {
   title?: string;

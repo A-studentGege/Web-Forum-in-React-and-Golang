@@ -1,6 +1,4 @@
-import EmptyState from "../states/EmptyState";
-
-import React from "react";
+import EmptyState from "@/components/states/EmptyState";
 
 export default function NoPosts() {
   return (

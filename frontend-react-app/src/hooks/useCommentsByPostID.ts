@@ -1,7 +1,8 @@
-import Comment from "../types/Comment";
-
 import { useEffect, useState } from "react";
-import { getCommentsByPostID } from "../services/commentService";
+
+import { getCommentsByPostID } from "@/services/commentService";
+
+import Comment from "@/types/Comment";
 
 /**
  * React hook to fetch a list of comments for a specific post

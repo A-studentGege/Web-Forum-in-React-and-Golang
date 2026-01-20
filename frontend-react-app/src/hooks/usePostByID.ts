@@ -1,7 +1,8 @@
-import Post from "../types/Post";
-
 import { useEffect, useState } from "react";
-import { getPostByID } from "../services/postService";
+
+import { getPostByID } from "@/services/postService";
+
+import Post from "@/types/Post";
 
 /**
  * Fetch a post's details

@@ -1,6 +1,7 @@
-import { useLatestPosts } from "../../hooks/useLatestPosts";
-import LoadingState from "../states/LoadingState";
-import PostList from "./PostList";
+import { useLatestPosts } from "@/hooks/useLatestPosts";
+
+import LoadingState from "@/components/states/LoadingState";
+import PostList from "@/components/posts/PostList";
 
 export default function LatestPostList() {
   const { posts, loading } = useLatestPosts();

@@ -1,11 +1,11 @@
-import Post from "../types/Post";
-
 import { useEffect, useState } from "react";
+
 import {
   fetchPostsByTopicId,
   fetchTopicById,
-} from "../services/topicService";
+} from "@/services/topicService";
 
+import Post from "@/types/Post";
 
 /**
  * Fetch a list of posts based on a specific topic

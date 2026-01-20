@@ -1,5 +1,5 @@
-import Topic from "../types/Topic";
-import Post from "../types/Post";
+import Topic from "@/types/Topic";
+import Post from "@/types/Post";
 
 const BASE_URL = "http://localhost:8080";
 

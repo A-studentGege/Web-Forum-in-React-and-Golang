@@ -1,10 +1,6 @@
-import Topic from "../../types/Topic";
+import { ListItem, ListItemButton, ListItemText } from "@mui/material";
 
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-
-import React from "react";
+import Topic from "@/types/Topic";
 
 type Props = {
   topic: Topic;

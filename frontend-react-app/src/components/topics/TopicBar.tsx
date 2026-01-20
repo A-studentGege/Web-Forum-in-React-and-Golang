@@ -1,17 +1,21 @@
-import Stack from "@mui/material/Stack";
-import Card from "@mui/material/Card";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
 import { useState } from "react";
-import Button from "@mui/material/Button";
 
-import TopicListItem from "./TopicListItem";
-import TopicManageList from "./TopicManageList";
-import { useTopics } from "../../hooks/useTopics";
-import { useAuth } from "../../context/AuthContext";
+import {
+  Button,
+  Stack,
+  Card,
+  Typography,
+  Modal,
+  Box,
+  List,
+  Divider,
+} from "@mui/material";
+
+import { useTopics } from "@/hooks/useTopics";
+import { useAuth } from "@/context/AuthContext";
+
+import TopicListItem from "@/components/topics/TopicListItem";
+import TopicManageList from "@/components/topics/TopicManageList";
 
 const style = {
   width: 400,

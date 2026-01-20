@@ -1,4 +1,4 @@
-import User from "./User";
+import User from "@/types/User";
 
 type AuthContextType = {
   user: User | null;

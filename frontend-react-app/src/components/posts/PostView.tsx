@@ -1,21 +1,22 @@
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
-import Chip from "@mui/material/Chip";
-import Divider from "@mui/material/Divider";
-import Stack from "@mui/material/Stack";
-
-import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import LoadingState from "../states/LoadingState";
-import usePostByID from "../../hooks/usePostByID";
-import { useAuth } from "../../context/AuthContext";
-import PostOptionsMenu from "./PostOptionsMenu";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Chip,
+  Divider,
+  Stack,
+} from "@mui/material";
 
-import { formatDateHelper } from "../../utils/formatDateHelper";
-import { deletePost, updatePost } from "../../services/postService";
-import { getContrastTextColor } from "../../utils/getContrastTextColor";
+import usePostByID from "@/hooks/usePostByID";
+import { useAuth } from "@/context/AuthContext";
+import { formatDateHelper } from "@/utils/formatDateHelper";
+import { deletePost, updatePost } from "@/services/postService";
+import { getContrastTextColor } from "@/utils/getContrastTextColor";
+
+import LoadingState from "@/components/states/LoadingState";
+import PostOptionsMenu from "@/components/posts/PostOptionsMenu";
 
 type Props = {
   onPostUpdated: () => void;
@@ -29,13 +30,8 @@ export default function PostView({ onPostUpdated }: Props) {
   const isOwner =
     isAuthenticated && post !== null && user?.id === post.author_id;
 
-  // controls the confirm dialog
-  const [confirmOpen, setConfirmOpen] = React.useState(false);
-
   // when user clicks delete, send delete req
   const handleDelete = async () => {
-    setConfirmOpen(false);
-
     try {
       if (!postID) return;
 
@@ -45,7 +41,7 @@ export default function PostView({ onPostUpdated }: Props) {
         {
           replace: true,
           state: { snackbar: "Post deleted successfully" }, // carry snackbar message
-        }
+        },
       );
     } catch (err) {
       console.error("Failed to delete post", err);

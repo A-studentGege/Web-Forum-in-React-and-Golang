@@ -1,3 +1,9 @@
+/**
+ * Format the date string 
+ * 
+ * @param date - date object retrieved from database
+ * @returns a string formatted in hh.mm <am|pm> dd mm yyyy
+ */
 export function formatDateHelper(date: Date): string {
   const hours24 = date.getHours();
   const minutes = date.getMinutes();

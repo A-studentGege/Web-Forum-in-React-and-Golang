@@ -1,6 +1,7 @@
-import User from "../types/User";
-import AuthContextType from "../types/AuthContext";
-import { decodeToken } from "../utils/decodeToken";
+import { decodeToken } from "@/utils/decodeToken";
+
+import User from "@/types/User";
+import AuthContextType from "@/types/AuthContext";
 
 import {
   createContext,

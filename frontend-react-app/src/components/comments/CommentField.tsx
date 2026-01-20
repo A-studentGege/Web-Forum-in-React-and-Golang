@@ -1,16 +1,12 @@
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import Card from "@mui/material/Card";
-import TextField from "@mui/material/TextField";
+import { useState, FormEvent } from "react";
+import { useParams } from "react-router-dom";
+
+import { Stack, Button, ButtonGroup, Card, TextField } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CancelIcon from "@mui/icons-material/Cancel";
 
-import { useAuth } from "../../context/AuthContext";
-import { createComment } from "../../services/commentService";
-
-import React from "react";
-import { useParams } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { createComment } from "@/services/commentService";
 
 export default function CommentField({
   onCommentCreated,
@@ -19,9 +15,9 @@ export default function CommentField({
 }) {
   const { token } = useAuth();
   const { postID } = useParams<{ postID: string }>();
-  const [content, setContent] = React.useState("");
+  const [content, setContent] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!token) {

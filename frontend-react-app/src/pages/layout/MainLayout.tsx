@@ -1,9 +1,10 @@
-import NavBar from "../../components/common/NavBar";
-import TopicBar from "../../components/topics/TopicBar";
-import Footer from "../../components/common/Footer";
+import { ReactNode } from "react";
 
-import Grid from "@mui/material/Grid";
-import React, { ReactNode } from "react";
+import { Grid } from "@mui/material";
+
+import NavBar from "@/components/common/NavBar";
+import TopicBar from "@/components/topics/TopicBar";
+import Footer from "@/components/common/Footer";
 
 type Props = {
   children: ReactNode;

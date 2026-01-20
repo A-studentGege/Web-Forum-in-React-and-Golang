@@ -1,7 +1,8 @@
-import Post from "../types/Post";
-
 import { useEffect, useState } from "react";
-import { getLatestPosts } from "../services/postService";
+
+import { getLatestPosts } from "@/services/postService";
+
+import Post from "@/types/Post";
 
 /**
  * Retrieve a list of posts ordered in reverse chronological order

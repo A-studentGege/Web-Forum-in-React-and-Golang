@@ -1,8 +1,8 @@
-import CommentField from "./CommentField";
-import CommentList from "./CommentList";
-
-import React from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
+
+import CommentField from "@/components/comments/CommentField";
+import CommentList from "@/components/comments/CommentList";
 
 type Props = {
   onCommentDeleted: () => void;
@@ -10,7 +10,7 @@ type Props = {
 
 export default function CommentSection({ onCommentDeleted }: Props) {
   const { postID } = useParams<{ postID: string }>();
-  const [refreshKey, setRefreshKey] = React.useState(0); // controls refresh of comment list
+  const [refreshKey, setRefreshKey] = useState(0); // controls refresh of comment list
   const handleCommentDeleted = () => {
     setRefreshKey((prev) => prev + 1); // trigger refresh list after delete
     onCommentDeleted(); // notify page to show snackbar

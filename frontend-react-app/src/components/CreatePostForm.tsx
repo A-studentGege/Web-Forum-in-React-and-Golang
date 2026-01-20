@@ -1,22 +1,24 @@
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import SendIcon from "@mui/icons-material/Send";
-
-import React from "react";
+import { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useAuth } from "../context/AuthContext";
-import { useTopics } from "../hooks/useTopics";
-import { createPost } from "../services/postService";
+import {
+  Card,
+  CardContent,
+  Button,
+  ButtonGroup,
+  Stack,
+  Typography,
+  TextField,
+  InputLabel,
+  MenuItem,
+  FormControl,
+  Select,
+} from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
+
+import { useAuth } from "@/context/AuthContext";
+import { useTopics } from "@/hooks/useTopics";
+import { createPost } from "@/services/postService";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -34,11 +36,11 @@ export default function CreatePostForm() {
   const navigate = useNavigate();
   const { topics } = useTopics();
 
-  const [topicId, setTopicId] = React.useState<number | "">("");
-  const [title, setTitle] = React.useState("");
-  const [content, setContent] = React.useState("");
+  const [topicId, setTopicId] = useState<number | "">("");
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!topicId || !title || !content) {
@@ -127,9 +129,6 @@ export default function CreatePostForm() {
           >
             {"Post"}
           </Button>
-          {/* <Button variant="outlined" color="inherit" endIcon={<CancelIcon />}>
-            {"Cancel"}
-          </Button> */}
         </ButtonGroup>
       </CardContent>
     </Card>

@@ -1,20 +1,23 @@
-import Card from "@mui/material/Card";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
-
-import React, { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+
+import {
+  Card,
+  Typography,
+  TextField,
+  Stack,
+  Button,
+  ButtonGroup,
+} from "@mui/material";
+
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
       // if login successful, redirect to home page
@@ -41,7 +44,7 @@ export default function LoginForm() {
           {"Welcome to *Project Forum*!"}
         </Typography>
         <Typography variant="body1" component={"p"}>
-          A place to ask, share and learn.
+          {"A place to ask, share and learn."}
         </Typography>
         <TextField
           required
@@ -62,10 +65,7 @@ export default function LoginForm() {
             disableElevation
             type="submit"
           >
-            {"Login"}
-          </Button>
-          <Button variant="outlined" color="inherit">
-            {"Continue as Guest"}
+            {"- Login -"}
           </Button>
         </ButtonGroup>
       </Stack>

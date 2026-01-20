@@ -1,3 +1,10 @@
+/**
+ * Shorten the post content to make a preview 
+ * 
+ * @param content - the post's full body content
+ * @param maxWords - max word count to show
+ * @returns shortened content ending with ... based on the max word count specified
+ */
 export function makePostPreview(
   content: string,
   maxWords: number = 50

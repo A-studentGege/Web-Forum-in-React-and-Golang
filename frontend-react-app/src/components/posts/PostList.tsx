@@ -1,10 +1,9 @@
-import Post from "../../types/Post";
+import { Typography, Card } from "@mui/material";
 
-import Typography from "@mui/material/Typography";
-import Card from "@mui/material/Card";
+import PostListItem from "@/components/posts/PostListItem";
+import NoPosts from "@/components/posts/NoPosts";
 
-import PostListItem from "./PostListItem";
-import NoPosts from "./NoPosts";
+import Post from "@/types/Post";
 
 type Props = {
   posts: Post[];

@@ -1,23 +1,25 @@
-import Topic from "../../types/Topic";
-
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 
-import { createTopic, deleteTopic } from "../../services/topicService";
+import {
+  Stack,
+  Typography,
+  Modal,
+  Box,
+  Divider,
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+
+import { useAuth } from "@/context/AuthContext";
+import { createTopic, deleteTopic } from "@/services/topicService";
+
+import Topic from "@/types/Topic";
 
 const style = {
   width: 400,
@@ -218,9 +220,9 @@ export default function TopicManageList({
           <DialogTitle>{"Delete Topic"}</DialogTitle>
           <DialogContent>
             <DialogContentText whiteSpace="pre-line">
-              {
-                "Are you sure you want to delete this topic?\nAll existing posts will be deleted too.\nThis action cannot be undone."
-              }
+              {`Are you sure you want to delete this topic?\n
+                All existing posts will be deleted too.\n
+                This action cannot be undone.`}
             </DialogContentText>
           </DialogContent>
           <DialogActions>

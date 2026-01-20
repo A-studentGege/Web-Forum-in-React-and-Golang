@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
-	"log"
 
 	"github.com/A-studentGege/backend-go/internal/models"
 	"github.com/A-studentGege/backend-go/internal/auth"
@@ -128,7 +127,6 @@ func CreatePost(w http.ResponseWriter, r *http.Request){
 
 	newID, err := models.CreatePost(authorID, req.Title, req.Content, req.TopicID)
     if err != nil {
-        log.Printf("Database error: %v", err)
         http.Error(w, "Failed to create post", http.StatusInternalServerError)
         return
     }
@@ -144,6 +142,8 @@ func CreatePost(w http.ResponseWriter, r *http.Request){
 //   204 No content - successful deletion
 // 	 400 Bad request - invalid post ID 
 // 	 401 Unauthorized - user not authorized
+//   403 Forbidden - user not owner of the post
+//   404 Not Found - post does not exist
 //   500 Internal Server Error - database failure
 //
 // Authentication: required
@@ -185,6 +185,8 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 //   204 No content - successful update
 // 	 400 Bad request - invalid post ID / invalid request body / include empty title or content
 // 	 401 Unauthorized - user not authorized
+//   403 Forbidden - user not owner of the post
+//   404 Not Found - post does not exist
 //   500 Internal Server Error - database failure
 //
 // Authentication: required

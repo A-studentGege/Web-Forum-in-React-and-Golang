@@ -1,9 +1,10 @@
 import { useParams } from "react-router-dom";
 
-import useCommentsByPostID from "../../hooks/useCommentsByPostID";
-import LoadingState from "../states/LoadingState";
-import CommentItem from "./CommentItem";
-import NoComments from "./NoComments";
+import useCommentsByPostID from "@/hooks/useCommentsByPostID";
+
+import LoadingState from "@/components/states/LoadingState";
+import CommentItem from "@/components/comments/CommentItem";
+import NoComments from "@/components/comments/NoComments";
 
 type Props = {
   refreshKey: number;
@@ -20,7 +21,7 @@ export default function CommentList({
   const { comments, loading } = useCommentsByPostID(postID, refreshKey); // retrieve comment list for the post
 
   if (loading) {
-    return <LoadingState message="looking for the post..." />;
+    return <LoadingState message="looking for the comments..." />;
   }
 
   // handle case where the post has no comments
