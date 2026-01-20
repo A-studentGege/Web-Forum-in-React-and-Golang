@@ -45,22 +45,27 @@ func GetTopics(w http.ResponseWriter, r *http.Request) {
 // Response:
 //   200 OK - topic object
 //   400 Bad Request - invalid topicID
+//   404 Not Found - topic does not exist 
 //   500 Internal Server Error - database failure
 //
 // Authentication: not required
 func GetTopicNameByID(w http.ResponseWriter, r *http.Request) {
 	// get "id" from path
 	idStr := chi.URLParam(r, "id")
-	id, err := strconv.Atoi(idStr)
+	topicID, err := strconv.Atoi(idStr)
 
-	if err != nil {
-		http.Error(w, "invalid topic id", http.StatusBadRequest)
+	if err != nil || topicID <= 0 {
+		http.Error(w, "Invalid topic id", http.StatusBadRequest)
 		return
 	}
 
-	topic, err := models.GetTopicNameByID(id)
+	topic, err := models.GetTopicNameByID(topicID)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		if err == models.ErrNotFound {
+			http.Error(w, "Topic not found", http.StatusNotFound)
+			return
+		}
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -72,7 +77,7 @@ func GetTopicNameByID(w http.ResponseWriter, r *http.Request) {
 //
 // Response:
 //   201 Created - JSON object containing new post ID
-// 	 400 Bad request - invalid request body/included empty name or invalid color code
+// 	 400 Bad request - invalid request body
 // 	 403 Forbidden - reject non-admin user req
 // 	 409 Conflict - duplicate topic already exists
 //   500 Internal Server Error - database failure
@@ -96,6 +101,12 @@ func CreateTopic(w http.ResponseWriter, r *http.Request){
 	// validation to check if new topic name and color code is valid
 	if req.Name == "" {
 		http.Error(w, "Topic name is required", http.StatusBadRequest)
+		return
+	}
+
+	// validation for topic name character limits
+	if len(req.Name) > 30 {
+		http.Error(w, "Topic name cannot exceed 30 characters", http.StatusBadRequest)
 		return
 	}
 		
@@ -140,7 +151,7 @@ func DeleteTopic(w http.ResponseWriter, r *http.Request) {
 
 	topicIDStr := chi.URLParam(r, "id")
 	topicID, err := strconv.Atoi(topicIDStr)
-	if err != nil {
+	if err != nil || topicID <= 0 {
 		http.Error(w, "Invalid topic ID", http.StatusBadRequest)
 		return
 	}

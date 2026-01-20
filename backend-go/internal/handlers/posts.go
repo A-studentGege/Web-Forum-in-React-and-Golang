@@ -54,8 +54,8 @@ func GetLatestPosts(w http.ResponseWriter, r *http.Request) {
 func GetPostsByTopicID(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "topicID")
 	topicID, err := strconv.Atoi(idStr)
-	if err != nil {
-		http.Error(w, "invalid topic ID", http.StatusBadRequest)
+	if err != nil || topicID <= 0 {
+		http.Error(w, "Invalid topic ID", http.StatusBadRequest)
 		return
 	}
 
@@ -74,19 +74,24 @@ func GetPostsByTopicID(w http.ResponseWriter, r *http.Request) {
 // Response:
 //   200 OK - post object
 // 	 400 Bad request - invalid post ID 
+//   404 Not Found - post does not exist 
 //   500 Internal Server Error - database failure
 //
 // Authentication: not required
 func GetPostByID(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		http.Error(w, "invalid post ID", http.StatusBadRequest)
+	if err != nil || id <= 0 {
+		http.Error(w, "Invalid post ID", http.StatusBadRequest)
 		return
 	}
 
 	post, err := models.GetPostByID(id)
 	if err != nil {
+		if err == models.ErrNotFound {
+			http.Error(w, "Post not found", http.StatusNotFound)
+			return
+		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -99,7 +104,7 @@ func GetPostByID(w http.ResponseWriter, r *http.Request) {
 // 
 // Response:
 //   201 Created - JSON object containing new post ID
-// 	 400 Bad request - invalid request body/included empty title or content
+// 	 400 Bad request - invalid request body
 // 	 401 Unauthorized - user not authorized
 //   500 Internal Server Error - database failure
 //
@@ -119,11 +124,28 @@ func CreatePost(w http.ResponseWriter, r *http.Request){
         return
     }
 
+	// topic ID should be a positive integer
+	if req.TopicID <= 0 {
+		http.Error(w, "Invalid TopicID", http.StatusBadRequest)
+		return
+	}
+
 	// validation to check if title or content is empty 
 	if req.Title == "" || req.Content == "" {
         http.Error(w, "Title and Content are required", http.StatusBadRequest)
         return
-    }
+    } 
+
+	// validation for character limits
+	if len(req.Title) > 300 {
+		http.Error(w, "Title cannot exceed 300 characters", http.StatusBadRequest)
+		return
+	}
+
+	if len(req.Content) > 2000 {
+		http.Error(w, "Content cannot exceed 2000 characters", http.StatusBadRequest)
+		return
+	}	
 
 	newID, err := models.CreatePost(authorID, req.Title, req.Content, req.TopicID)
     if err != nil {
@@ -158,7 +180,7 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	// get post id from url param 
 	postIDStr := chi.URLParam(r, "id")
 	postID, err := strconv.Atoi(postIDStr)
-	if err != nil {
+	if err != nil || postID <= 0 {
 		http.Error(w, "Invalid post ID", http.StatusBadRequest)
 		return
 	}
@@ -183,7 +205,7 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 // 
 // Response:
 //   204 No content - successful update
-// 	 400 Bad request - invalid post ID / invalid request body / include empty title or content
+// 	 400 Bad request - invalid post ID / invalid request body
 // 	 401 Unauthorized - user not authorized
 //   403 Forbidden - user not owner of the post
 //   404 Not Found - post does not exist
@@ -201,7 +223,7 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
 	// get post id from url param 
 	postIDStr := chi.URLParam(r, "id")
 	postID, err := strconv.Atoi(postIDStr)
-	if err != nil {
+	if err != nil || postID {
 		http.Error(w, "Invalid post ID", http.StatusBadRequest)
 		return
 	}
@@ -218,6 +240,17 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Title and Content are required", http.StatusBadRequest)
         return
     }
+
+	// validation for character limits
+	if len(req.Title) > 300 {
+		http.Error(w, "Title cannot exceed 300 characters", http.StatusBadRequest)
+		return
+	}
+
+	if len(req.Content) > 2000 {
+		http.Error(w, "Content cannot exceed 2000 characters", http.StatusBadRequest)
+		return
+	}	
 
 	err = models.UpdatePost(authorID, postID, req.Title, req.Content)
 	if err != nil {

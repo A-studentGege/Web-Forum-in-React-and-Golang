@@ -30,6 +30,8 @@ const MenuProps = {
     },
   },
 };
+const MAX_TITLE = 300; // max char limit for post title
+const MAX_CONTENT = 2000; // max char limit for post content
 
 export default function CreatePostForm() {
   const { token } = useAuth();
@@ -43,8 +45,20 @@ export default function CreatePostForm() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
+    // check if topic id, title or content is empty
     if (!topicId || !title || !content) {
       alert("Please fill in all fields for your post!");
+      return;
+    }
+
+    // character limit check
+    if (title.length > MAX_TITLE) {
+      alert(`Title cannot exceed ${MAX_TITLE} characters`);
+      return;
+    }
+
+    if (content.length > MAX_CONTENT) {
+      alert(`Content cannot exceed ${MAX_CONTENT} characters`);
       return;
     }
 
@@ -99,10 +113,14 @@ export default function CreatePostForm() {
             required
             fullWidth
             label="Title"
-            placeholder="Pls make sure your post is relevant to the topic"
+            placeholder="Pls make sure your post is relevant to the topic (max 300 char)"
             variant="standard"
             onChange={(e) => setTitle(e.target.value)}
           />
+          {/* add a small char count reminder */}
+          <small>
+            {title.length}/{MAX_TITLE}
+          </small>
         </Stack>
 
         <TextField
@@ -110,7 +128,7 @@ export default function CreatePostForm() {
           multiline
           fullWidth
           rows={8}
-          placeholder="What do you want to share?"
+          placeholder="What do you want to share? (max 2000 char)"
           variant="standard"
           sx={{ my: 2 }}
           onChange={(e) => setContent(e.target.value)}
@@ -127,7 +145,7 @@ export default function CreatePostForm() {
             disableElevation
             endIcon={<SendIcon />}
           >
-            {"Post"}
+            ({content.length}/{MAX_CONTENT}) {"Post"}
           </Button>
         </ButtonGroup>
       </CardContent>

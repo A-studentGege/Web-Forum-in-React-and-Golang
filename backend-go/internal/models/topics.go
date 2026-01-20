@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"database/sql"
 
 	"github.com/lib/pq"
 	"github.com/A-studentGege/backend-go/internal/db"
@@ -44,6 +45,9 @@ func GetTopicNameByID(id int) (*Topic, error) {
 
 	var t Topic
 	if err := row.Scan(&t.ID, &t.Name); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, ErrNotFound
+		}
 		return nil, err
 	}
 

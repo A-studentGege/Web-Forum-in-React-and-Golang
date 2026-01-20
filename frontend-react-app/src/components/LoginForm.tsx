@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 
 import { useAuth } from "@/context/AuthContext";
+import { isValidUsername } from "@/utils/isValidUsername";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
@@ -19,6 +20,13 @@ export default function LoginForm() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    if (!isValidUsername(username)) {
+      alert("Username must be letters and numbers only, max 20 characters.");
+      setUsername(""); // reset
+      return;
+    }
+
     try {
       // if login successful, redirect to home page
       await login(username);
@@ -53,6 +61,7 @@ export default function LoginForm() {
           variant="standard"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          helperText="Tips: letters and numbers only, no space/symbols, max 20 char."
         />
         <ButtonGroup
           variant="outlined"

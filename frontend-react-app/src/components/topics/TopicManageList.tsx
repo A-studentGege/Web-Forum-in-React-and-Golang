@@ -18,6 +18,7 @@ import {
 
 import { useAuth } from "@/context/AuthContext";
 import { createTopic, deleteTopic } from "@/services/topicService";
+import { isValidHexColorCode } from "@/utils/isValidHexColorCode";
 
 import Topic from "@/types/Topic";
 
@@ -39,6 +40,8 @@ type Props = {
   onRefresh: () => void;
 };
 
+const MAX_NAME = 30;
+
 export default function TopicManageList({
   topics,
   open,
@@ -56,10 +59,22 @@ export default function TopicManageList({
   const [newTopicName, setNewTopicName] = useState("");
   const [newTopicColor, setNewTopicColor] = useState("#");
 
-  // placeholders for API logic
   const handleCreateTopic = async () => {
-    if (!newTopicName || !/^#[0-9A-Fa-f]{6}$/.test(newTopicColor)) {
-      alert("Please enter a topic name and valid hex color");
+    if (!newTopicName) {
+      alert("Please enter a topic name");
+      return;
+    }
+
+    // topic name char check
+    if (newTopicName.length > MAX_NAME) {
+      alert(`Topic name cannot exceed ${MAX_NAME} characters`);
+      return;
+    }
+
+    if (isValidHexColorCode(newTopicColor)) {
+      alert(
+        "The color code is invalid. \nIt should start with #, followed by 6 characters made by numbers 0-9 or letters A-F",
+      );
       return;
     }
 
@@ -121,6 +136,7 @@ export default function TopicManageList({
             label="Topic name"
             value={newTopicName}
             onChange={(e) => setNewTopicName(e.target.value)}
+            error={newTopicName.length > MAX_NAME}
             fullWidth
           />
 
@@ -135,8 +151,7 @@ export default function TopicManageList({
               sx={{ flex: 1 }}
               // validate hex code
               error={
-                newTopicColor.length > 1 &&
-                !/^#[0-9A-Fa-f]{6}$/.test(newTopicColor)
+                newTopicColor.length > 1 && isValidHexColorCode(newTopicColor)
               }
               helperText="Format: #RRGGBB"
             />
@@ -149,7 +164,7 @@ export default function TopicManageList({
                 borderRadius: 1,
                 border: "1px solid",
                 borderColor: "divider",
-                backgroundColor: /^#[0-9A-Fa-f]{6}$/.test(newTopicColor)
+                backgroundColor: isValidHexColorCode(newTopicColor)
                   ? newTopicColor
                   : "transparent",
               }}

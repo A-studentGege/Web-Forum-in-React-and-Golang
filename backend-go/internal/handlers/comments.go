@@ -32,8 +32,8 @@ type updateCommentRequest struct {
 func GetCommentsByPostID(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	postID, err := strconv.Atoi(idStr)
-	if err != nil {
-		http.Error(w, "invalid post ID", http.StatusBadRequest)
+	if err != nil || postID <= 0 {
+		http.Error(w, "Invalid post ID", http.StatusBadRequest)
 		return
 	}
 
@@ -67,8 +67,8 @@ func CreateComment(w http.ResponseWriter, r *http.Request){
 	// get target post id
 	idStr := chi.URLParam(r, "id")
 	postID, err := strconv.Atoi(idStr)
-	if err != nil {
-		http.Error(w, "invalid post ID", http.StatusBadRequest)
+	if err != nil || postID <= 0 {
+		http.Error(w, "Invalid post ID", http.StatusBadRequest)
 		return
 	}
 
@@ -85,6 +85,12 @@ func CreateComment(w http.ResponseWriter, r *http.Request){
         http.Error(w, "Content is required", http.StatusBadRequest)
         return
     }
+
+	// validation to check comment char limits
+	if len(req.Content) > 2000 {
+		http.Error(w, "Content cannot exceed 2000 characters", http.StatusBadRequest)
+		return
+	}	
 
 	newID, err := models.CreateComment(authorID, postID, req.Content)
     if err != nil {
@@ -119,7 +125,7 @@ func DeleteComment(w http.ResponseWriter, r *http.Request){
 	// get comment id from url param 
 	commentIDStr := chi.URLParam(r, "id")
 	commentID, err := strconv.Atoi(commentIDStr)
-	if err != nil {
+	if err != nil || commentID <= 0 {
 		http.Error(w, "Invalid comment ID", http.StatusBadRequest)
 		return
 	}
@@ -144,7 +150,7 @@ func DeleteComment(w http.ResponseWriter, r *http.Request){
 // 
 // Response:
 //   204 No content - successful update
-// 	 400 Bad request - invalid post ID / invalid request body / include empty content
+// 	 400 Bad request - invalid post ID / invalid request body
 // 	 401 Unauthorized - user not authorized
 //   403 Forbidden - user not owner of the comment
 //   404 Not Found - comment does not exist
@@ -162,7 +168,7 @@ func UpdateComment(w http.ResponseWriter, r *http.Request){
 	// get comment id from url param 
 	commentIDStr := chi.URLParam(r, "id")
 	commentID, err := strconv.Atoi(commentIDStr)
-	if err != nil {
+	if err != nil || commentID <= 0 {
 		http.Error(w, "Invalid comment ID", http.StatusBadRequest)
 		return
 	}
@@ -179,6 +185,12 @@ func UpdateComment(w http.ResponseWriter, r *http.Request){
         http.Error(w, "Content is required", http.StatusBadRequest)
         return
     }
+
+	// validation to check comment char limits
+	if len(req.Content) > 2000 {
+		http.Error(w, "Content cannot exceed 2000 characters", http.StatusBadRequest)
+		return
+	}	
 
 	err = models.UpdateComment(authorID, commentID, req.Content)
 	if err != nil {

@@ -8,6 +8,8 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { useAuth } from "@/context/AuthContext";
 import { createComment } from "@/services/commentService";
 
+const MAX_CONTENT = 2000; // max char limit for comment
+
 export default function CommentField({
   onCommentCreated,
 }: {
@@ -36,6 +38,12 @@ export default function CommentField({
       return;
     }
 
+    // content char check
+    if (content.length > MAX_CONTENT) {
+      alert(`Content cannot exceed ${MAX_CONTENT} characters`);
+      return;
+    }
+
     const payload = {
       content,
     };
@@ -44,6 +52,11 @@ export default function CommentField({
 
     setContent(""); // reset  the comment field after submission
     onCommentCreated(); // trigger comment list refresh
+  };
+
+  // clear the comment field
+  const handleClear = () => {
+    setContent("");
   };
 
   return (
@@ -65,7 +78,7 @@ export default function CommentField({
           multiline
           fullWidth
           rows={4}
-          placeholder="While you have the freedom to share your opinion, please remain respectful!"
+          placeholder="While you have the freedom to share your opinion, please remain respectful! (max 2000 char)"
           variant="standard"
           sx={{ pb: 1 }}
           value={content}
@@ -86,8 +99,13 @@ export default function CommentField({
           >
             {"Share"}
           </Button>
-          <Button variant="outlined" color="inherit" endIcon={<CancelIcon />}>
-            {"Cancel"}
+          <Button
+            variant="outlined"
+            color="inherit"
+            onClick={handleClear}
+            endIcon={<CancelIcon />}
+          >
+            {"Clear"}
           </Button>
         </ButtonGroup>
       </Stack>

@@ -7,6 +7,7 @@ import (
 
 	"github.com/A-studentGege/backend-go/internal/models"
 	"github.com/A-studentGege/backend-go/internal/auth"
+	"github.com/A-studentGege/backend-go/internal/util"
 
 	"github.com/go-chi/chi/v5"	
 )
@@ -56,6 +57,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	var u User
 	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	if len(u.Username) > 20 || !util.IsValidUsername(u.Username) {
+		http.Error(w, "Invalid username: username must be letters and numbers only, max 20 characters.", http.StatusBadRequest)
 		return
 	}
 

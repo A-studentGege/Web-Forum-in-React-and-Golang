@@ -2,6 +2,7 @@ package models
 
 import (
 	"time"
+	"database/sql"
 
 	"github.com/A-studentGege/backend-go/internal/db"
 )
@@ -89,7 +90,7 @@ func GetPostsByTopicID(topicID int) ([]Post, error) {
 
 // GetPostByID returns a Post object by its ID
 func GetPostByID(id int) (*Post, error) {
-	rows, err := db.DB.Query(
+	row := db.DB.QueryRow(
 		`SELECT p.id, p.title, p.content, t.name as topic, t.color, u.username, u.id, p.created_at 
 		FROM posts p
 		JOIN users u ON p.author_id = u.id
@@ -97,27 +98,25 @@ func GetPostByID(id int) (*Post, error) {
 		WHERE p.id = $1`,
 		id,
 	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
 
 	var p Post
-	for rows.Next() {
-		if err := rows.Scan(&p.ID, 
-							&p.Title, 
-							&p.Content,
-							&p.Topic,
-							&p.TopicColor,
-							&p.Author, 
-							&p.AuthorID,  
-							&p.CreatedAt,
-		); err != nil {
-			return nil, err
+	if err := row.Scan(&p.ID, 
+						&p.Title, 
+						&p.Content,
+						&p.Topic,
+						&p.TopicColor,
+						&p.Author, 
+						&p.AuthorID,  
+						&p.CreatedAt,
+	); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, ErrNotFound
 		}
+		return nil, err
 	}
+	
 
-	return &p, nil // return a single post object
+	return &p, nil 
 }
 
 // CreatePost creates a new post authored by the given user
