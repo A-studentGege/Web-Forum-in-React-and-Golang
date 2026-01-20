@@ -8,6 +8,20 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
+
+    // for supporting aliases
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@context/*": ["src/context"],
+      "@hooks/*": ["src/hooks"],
+      "@pages/*": ["src/pages"],
+      "@services/*": ["src/services"],
+      "@types/*": ["src/types"],
+      "@utils/*": ["src/utils"]
+    },
+
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
