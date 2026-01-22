@@ -22,11 +22,14 @@ func SetupRoutes() *chi.Mux {
     }))
 
 	// all the routes go here
-	// need figure out parameter and query parameter usage and how to pass in to operations
+	r.Route("/auth", func (r chi.Router){
+		r.Get("/me", auth.AuthMiddleware(handlers.GetMe)); // retrieves user info to check token validity
+	})
+	
 	r.Route("/users", func (r chi.Router){
 		r.Get("/{id}", handlers.GetUserByID)
 		
-		r.Post("/login", handlers.LoginHandler)
+		r.Post("/login", handlers.LoginHandler) // handles user login
 	})
 
 	r.Route("/topics", func (r chi.Router){

@@ -223,7 +223,7 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
 	// get post id from url param 
 	postIDStr := chi.URLParam(r, "id")
 	postID, err := strconv.Atoi(postIDStr)
-	if err != nil || postID {
+	if err != nil || postID <= 0 {
 		http.Error(w, "Invalid post ID", http.StatusBadRequest)
 		return
 	}

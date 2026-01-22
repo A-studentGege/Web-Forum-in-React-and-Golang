@@ -79,3 +79,14 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		"token": tokenString,
 	})
 }
+
+// GetMe handles GET /auth/me
+// validate JWT token only
+// 
+// Responses:
+//   204 No Content - token is valid
+//   401 Unauthorized - token is invalid / expired (handled by middleware)
+// 
+func GetMe(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNoContent)
+}

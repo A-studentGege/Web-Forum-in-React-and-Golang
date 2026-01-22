@@ -1,8 +1,3 @@
-import { decodeToken } from "@/utils/decodeToken";
-
-import User from "@/types/User";
-import AuthContextType from "@/types/AuthContext";
-
 import {
   createContext,
   useContext,
@@ -10,6 +5,11 @@ import {
   useEffect,
   ReactNode,
 } from "react";
+import { userLogin, fetchMe } from "@/services/authService";
+import { decodeToken } from "@/utils/decodeToken";
+
+import User from "@/types/User";
+import AuthContextType from "@/types/AuthContext";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -20,51 +20,64 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 
   // Logic to persist login on page refresh
-  // checks if a token exists and sync with react state
+  // checks if a token exists, validates it, and sync with react state
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
-    if (savedToken) {
-      const decoded = decodeToken(savedToken);
-
-      setToken(savedToken);
-      // store user details to user state
-      setUser({
-        id: decoded.id,
-        username: decoded.username,
-        is_admin: decoded.is_admin,
-      });
+    if (!savedToken) {
+      return;
     }
+
+    const initAuth = async () => {
+      try {
+        await validateToken(savedToken);
+        applyToken(savedToken);
+      } catch (err) {
+        if (err instanceof Error && err.message === "SESSION_EXPIRED") {
+          alert("Your session has expired, please log in again.");
+          logout();
+        } else {
+          alert("Server error, please try again later.");
+        }
+      }
+    };
+
+    initAuth();
   }, []);
 
   // login func to communicate with backend
   const login = async (username: string) => {
     try {
-      const response = await fetch("http://localhost:8080/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed");
-      }
+      const data = await userLogin({ username: username });
 
       // save token to local storage
       localStorage.setItem("token", data.token);
-      setToken(data.token);
 
-      // decode token and set user state
-      const decoded = decodeToken(data.token);
-      setUser({
-        id: decoded.id,
-        username: decoded.username,
-        is_admin: decoded.is_admin,
-      });
+      await validateToken(data.token);
+      applyToken(data.token);
     } catch (error) {
-      console.error("Auth error:", error);
+      localStorage.removeItem("token");
+      setToken(null);
+      setUser(null);
+      alert("Some error occurred, please try again.");
+      alert(error);
     }
+  };
+
+  // validate the token with backend
+  const validateToken = async (token: string) => {
+    await fetchMe(token);
+  };
+
+  // decode the token and set state with its claims
+  const applyToken = (token: string) => {
+    const decoded = decodeToken(token);
+
+    setToken(token);
+    setUser({
+      id: decoded.id,
+      username: decoded.username,
+      is_admin: decoded.is_admin,
+    });
   };
 
   // when logout, remove token and reset user
