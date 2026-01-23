@@ -4,6 +4,7 @@ import {
   useState,
   useEffect,
   ReactNode,
+  useCallback,
 } from "react";
 import { userLogin, fetchMe } from "@/services/authService";
 import { decodeToken } from "@/utils/decodeToken";
@@ -36,15 +37,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.getItem("token"),
   );
 
-  // Logic to persist login on page refresh
-  // checks if a token exists, validates it, and sync with react state
-  useEffect(() => {
-    const savedToken = localStorage.getItem("token");
-    if (!savedToken) {
-      return;
-    }
+  // decode the token and set state with its claims
+  const applyToken = useCallback((token: string) => {
+    try {
+      const decoded = decodeToken(token);
 
-    const initAuth = async (token: string) => {
+      setToken(token);
+      setUser({
+        id: decoded.id,
+        username: decoded.username,
+        is_admin: decoded.is_admin,
+      });
+    } catch {
+      logout();
+    }
+  }, []);
+
+  const initAuth = useCallback(
+    async (token: string) => {
       try {
         await validateToken(token);
         applyToken(token);
@@ -56,10 +66,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           alert("Server error, please try again later.");
         }
       }
-    };
-
-    initAuth(savedToken);
-  }, []);
+    },
+    [applyToken],
+  );
 
   // login func to communicate with backend
   const login = async (username: string) => {
@@ -84,28 +93,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await fetchMe(token);
   };
 
-  // decode the token and set state with its claims
-  const applyToken = (token: string) => {
-    try {
-      const decoded = decodeToken(token);
-
-      setToken(token);
-      setUser({
-        id: decoded.id,
-        username: decoded.username,
-        is_admin: decoded.is_admin,
-      });
-    } catch {
-      logout();
-    }
-  };
-
   // when logout, remove token and reset user
   const logout = () => {
     localStorage.removeItem("token");
     setToken(null);
     setUser(null);
   };
+
+  // Logic to persist login on page refresh
+  // checks if a token exists, validates it, and sync with react state
+  useEffect(() => {
+    const savedToken = localStorage.getItem("token");
+    if (!savedToken) {
+      return;
+    }
+
+    initAuth(savedToken);
+  }, [initAuth]);
 
   return (
     <AuthContext.Provider
