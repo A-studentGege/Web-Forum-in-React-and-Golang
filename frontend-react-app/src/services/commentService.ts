@@ -10,7 +10,7 @@ const BASE_URL = "http://localhost:8080";
  * @throws Error if the request fails
  */
 export async function getCommentsByPostID(postId : string) : Promise<Comment[]> {
-  const res = await await fetch(`${BASE_URL}/posts/${postId}/comments`);
+  const res = await fetch(`${BASE_URL}/posts/${postId}/comments`);
   if (!res.ok) throw new Error("Failed to fetch the comments for the post");
   return res.json();
 }
@@ -44,6 +44,8 @@ export async function createComment(
   if (!res.ok) {
     throw new Error("Failed to create comment");
   }
+
+  return res.json();
 }
 
 /**
@@ -56,13 +58,18 @@ export async function createComment(
  * @throws Error if deletion fails or user is unauthorized 
  */
 export async function deleteComment(commentId : number, token : string) {
-  const res = await await fetch(`${BASE_URL}/comments/${commentId}`,{
+  const res = await fetch(`${BASE_URL}/comments/${commentId}`,{
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`
     }
   });
-  if (!res.ok) throw new Error("Failed to delete comment");
+
+  if (!res.ok) {
+    const error = new Error("Failed to delete comment");
+    (error as any).status = res.status;
+    throw error;
+  }
 }
 
 /**
@@ -78,12 +85,18 @@ export async function deleteComment(commentId : number, token : string) {
 export async function updateComment(commentId : number, token : string, payload: {
     content: string;
   }) {
-  const res = await await fetch(`${BASE_URL}/comments/${commentId}`, {
+  const res = await fetch(`${BASE_URL}/comments/${commentId}`, {
     method: "PUT",
     headers: {
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`
     },
     body: JSON.stringify(payload)
   });
-  if (!res.ok) throw new Error("Failed to update comment"); 
+  
+  if (!res.ok) {
+    const error = new Error("Failed to update comment");
+    (error as any).status = res.status;
+    throw error;
+  }
 }

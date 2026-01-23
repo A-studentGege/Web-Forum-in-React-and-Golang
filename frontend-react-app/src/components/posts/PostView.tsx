@@ -53,6 +53,12 @@ export default function PostView({ onPostUpdated }: Props) {
     try {
       if (!postID) return;
 
+      if (title === "" || content === "") {
+        alert("Title or content cannot be empty...");
+        refresh();
+        return;
+      }
+
       await updatePost(postID, token!, { content: content, title: title });
       onPostUpdated(); // trigger snackbar msg
       refresh(); // refresh post details

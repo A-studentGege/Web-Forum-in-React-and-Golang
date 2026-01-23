@@ -80,6 +80,7 @@ export default function PostOptionsMenu({
             label="Post Title"
             fullWidth
             multiline
+            required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             sx={{ mb: 2 }}
@@ -91,6 +92,7 @@ export default function PostOptionsMenu({
             autoFocus
             fullWidth
             multiline
+            required
             minRows={5}
             value={content}
             onChange={(e) => setContent(e.target.value)}

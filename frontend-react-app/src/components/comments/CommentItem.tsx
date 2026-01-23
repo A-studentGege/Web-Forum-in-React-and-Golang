@@ -32,6 +32,11 @@ export default function CommentItem({ comment, onDeleted, onUpdated }: Props) {
   // when user clicks edit, send update req
   const handleEdit = async (content: string) => {
     try {
+      if (content === "") {
+        alert("Comment cannot be empty...");
+        onUpdated();
+        return;
+      }
       await updateComment(comment.id, token!, { content: content });
       onUpdated();
     } catch (err) {

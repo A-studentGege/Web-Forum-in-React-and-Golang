@@ -83,25 +83,34 @@ export default function TopicManageList({
       color: newTopicColor,
     };
 
-    await createTopic(token!, payload);
-    await onRefresh();
+    try {
+      await createTopic(token!, payload);
+      await onRefresh();
 
-    setNewTopicName("");
-    setNewTopicColor("#");
+      setNewTopicName("");
+      setNewTopicColor("#");
 
-    // placeholder msg
-    navigate("/", {
-      replace: true,
-      state: { snackbar: "Topic created successfully" }, // carry snackbar message
-    }); // direct back to home page
+      // placeholder msg
+      navigate("/", {
+        replace: true,
+        state: { snackbar: "Topic created successfully" }, // carry snackbar message
+      }); // direct back to home page
+    } catch (error: any) {
+      if (error.status === 409) {
+        alert("Topic already exists. Please choose a different name.");
+        setNewTopicName("");
+      } else {
+        alert(`Failed to create topic: ${error.message || "Unknown error"}`);
+      }
+    }
   };
 
   const handleDeleteTopic = async (id: number) => {
     try {
       await deleteTopic(token!, id);
       await onRefresh();
-    } catch (err) {
-      console.log(err);
+    } catch (error: any) {
+      alert(`Failed to create topic: ${error.message || "Unknown error"}`);
     }
 
     // placeholder msg

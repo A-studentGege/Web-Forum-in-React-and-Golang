@@ -19,11 +19,19 @@ export async function userLogin (
     body: JSON.stringify(payload),
     });
 
-    const data = await res.json();
+    let data: any = null;
+
+    try {
+        data = await res.json();
+    } catch {
+        // ignore JSON parse errors
+    }
+
     if (!res.ok) {
-    throw new Error(data.message || "Login failed.");
+    throw new Error(data?.message || "Login failed.");
     }
     return data;
+
 }
 
 /**
@@ -32,8 +40,8 @@ export async function userLogin (
  * @param token - JWT token
  * @returns no content if token is valid, 401 if token invalid(expired)
  */
-export async function fetchMe(token : string) {
-    const res = await await fetch(`${BASE_URL}/auth/me`, {
+export async function fetchMe(token : string) : Promise<void> {
+    const res = await fetch(`${BASE_URL}/auth/me`, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${token}`,

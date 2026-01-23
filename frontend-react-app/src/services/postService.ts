@@ -9,7 +9,7 @@ const BASE_URL = "http://localhost:8080";
  * @throws Error if the request fails
  */
 export async function getLatestPosts() : Promise<Post[]> {
-  const res = await await fetch(`${BASE_URL}/posts`);
+  const res = await fetch(`${BASE_URL}/posts`);
   if (!res.ok) throw new Error("Failed to fetch the latest posts");
   return res.json();
 }
@@ -22,7 +22,7 @@ export async function getLatestPosts() : Promise<Post[]> {
  * @throws Error if the request fails
  */
 export async function getPostByID(postId : string) : Promise<Post> {
-  const res = await await fetch(`${BASE_URL}/posts/${postId}`);
+  const res = await fetch(`${BASE_URL}/posts/${postId}`);
   if (!res.ok) throw new Error("Failed to fetch the post's details");
   return res.json();
 }
@@ -56,6 +56,8 @@ export async function createPost(
   if (!res.ok) {
     throw new Error("Failed to create post");
   }
+
+  return res.json();
 }
 
 /**
@@ -65,16 +67,21 @@ export async function createPost(
  * 
  * @param postId - ID for the post
  * @param token - JWT token
- * @throws Error if deletion fails or user is unauthroized
+ * @throws Error if deletion fails or user is unauthorized 
  */
 export async function deletePost(postId : string, token : string) {
-  const res = await await fetch(`${BASE_URL}/posts/${postId}`,{
+  const res = await fetch(`${BASE_URL}/posts/${postId}`,{
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`
     }
   });
-  if (!res.ok) throw new Error("Failed to delete post");
+
+  if (!res.ok) {
+    const error = new Error("Failed to delete post");
+    (error as any).status = res.status;
+    throw error;
+  }
 }
 
 /**
@@ -85,20 +92,26 @@ export async function deletePost(postId : string, token : string) {
  * @param postId - ID for the post
  * @param token - JWT token
  * @param payload - updated post details
- * @throws Error if deletion fails or user is unauthroized
+ * @throws Error if update fails or user is unauthroized
  */
 export async function updatePost(postId : string, token : string, payload: {
     title: string,
     content: string;
   }) {
-  const res = await await fetch(`${BASE_URL}/posts/${postId}`, {
+  const res = await fetch(`${BASE_URL}/posts/${postId}`, {
     method: "PUT",
     headers: {
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`
     },
     body: JSON.stringify(payload)
   });
-  if (!res.ok) throw new Error("Failed to update post"); 
+
+  if (!res.ok) {
+    const error = new Error("Failed to update post");
+    (error as any).status = res.status;
+    throw error;
+  }
 }
 
 /**
@@ -108,7 +121,7 @@ export async function updatePost(postId : string, token : string, payload: {
  * @returns a list of posts that contain keyword in their title/content
  */
 export async function searchPost(keyword : string): Promise<Post[]> {
-  const res = await await fetch(`${BASE_URL}/posts?q=${keyword}`);
+  const res = await fetch(`${BASE_URL}/posts?q=${encodeURIComponent(keyword)}`);
   if (!res.ok) throw new Error("Failed to search post by keyword"); 
 
   return res.json();

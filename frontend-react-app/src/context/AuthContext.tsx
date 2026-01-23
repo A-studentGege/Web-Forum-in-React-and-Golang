@@ -13,6 +13,23 @@ import AuthContextType from "@/types/AuthContext";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * AuthProvider supplies authentication state and actions to the application.
+ * should only be accessed via useAuth hook
+ *
+ * Responsibilities:
+ * - Stores authenticated user and JWT token in React state
+ * - Persists login across page refresh using localStorage
+ * - Validates existing tokens with the backend on app load
+ * - Decodes JWT claims and synchronizes user state
+ * - Provides login and logout functionality
+ *
+ *  Wrap this provider around components that require authentication access.
+ *
+ * @param {Object} props
+ * @param {ReactNode} props.children - Child components that need access to auth context
+ * @returns {JSX.Element} Auth context provider component
+ */
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(
@@ -27,10 +44,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    const initAuth = async () => {
+    const initAuth = async (token: string) => {
       try {
-        await validateToken(savedToken);
-        applyToken(savedToken);
+        await validateToken(token);
+        applyToken(token);
       } catch (err) {
         if (err instanceof Error && err.message === "SESSION_EXPIRED") {
           alert("Your session has expired, please log in again.");
@@ -41,7 +58,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
-    initAuth();
+    initAuth(savedToken);
   }, []);
 
   // login func to communicate with backend
@@ -59,7 +76,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setToken(null);
       setUser(null);
       alert("Some error occurred, please try again.");
-      alert(error);
     }
   };
 
@@ -70,14 +86,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // decode the token and set state with its claims
   const applyToken = (token: string) => {
-    const decoded = decodeToken(token);
+    try {
+      const decoded = decodeToken(token);
 
-    setToken(token);
-    setUser({
-      id: decoded.id,
-      username: decoded.username,
-      is_admin: decoded.is_admin,
-    });
+      setToken(token);
+      setUser({
+        id: decoded.id,
+        username: decoded.username,
+        is_admin: decoded.is_admin,
+      });
+    } catch {
+      logout();
+    }
   };
 
   // when logout, remove token and reset user
@@ -97,7 +117,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// custom hook for easy access
+/**
+ * useAuth is a custom hook for accessing authentication context.
+ *
+ * Provides:
+ * - Authenticated user information
+ * - JWT token
+ * - Authentication state (isAuthenticated)
+ * - Login and logout functions
+ *
+ * Must be used within an AuthProvider. Throws an error otherwise.
+ *
+ * @throws {Error} If used outside of AuthProvider
+ * @returns {AuthContextType} Authentication context values and actions
+ */
 export const useAuth = () => {
   const context = useContext(AuthContext);
   // error check for using auth data in part of app that's not wrapped by auth provider
