@@ -160,7 +160,7 @@ export default function TopicManageList({
               sx={{ flex: 1 }}
               // validate hex code
               error={
-                newTopicColor.length > 1 && isValidHexColorCode(newTopicColor)
+                newTopicColor.length > 1 && !isValidHexColorCode(newTopicColor)
               }
               helperText="Format: #RRGGBB"
             />
@@ -174,7 +174,7 @@ export default function TopicManageList({
                 border: "1px solid",
                 borderColor: "divider",
                 backgroundColor: isValidHexColorCode(newTopicColor)
-                  ? newTopicColor
+                  ? newTopicColor.toUpperCase()
                   : "transparent",
               }}
             />
