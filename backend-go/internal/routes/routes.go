@@ -27,8 +27,6 @@ func SetupRoutes() *chi.Mux {
 	})
 	
 	r.Route("/users", func (r chi.Router){
-		r.Get("/{id}", handlers.GetUserByID)
-		
 		r.Post("/login", handlers.LoginHandler) // handles user login
 	})
 

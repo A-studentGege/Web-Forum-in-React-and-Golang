@@ -7,30 +7,10 @@ import (
 )
 
 // User represents a user on the forum
-type UserPublic struct {
-	ID    int    `json:"id"`
-	Username  string `json:"username"`
-}
-
 type UserInternal struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
 	IsAdmin  bool   `json:"is_admin"`
-}
-
-// GetUserByID returns a user's id and username associated with a given user ID 
-func GetUserByID(id int) (*UserPublic, error) {
-	row := db.DB.QueryRow(
-		"SELECT id, username FROM users WHERE id = $1",
-		id,
-	)
-
-	var u UserPublic
-	if err := row.Scan(&u.ID, &u.Username); err != nil {
-		return nil, err
-	}
-
-	return &u, nil
 }
 
 // LoginByusername logs user in by the given username
