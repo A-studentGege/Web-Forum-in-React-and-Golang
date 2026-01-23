@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/A-studentGege/backend-go/internal/models"
 	"github.com/A-studentGege/backend-go/internal/auth"
@@ -24,44 +25,55 @@ type updatePostRequest struct {
 	Content string	`json:"content"`
 }
 
-
-// GetLatestPosts handles GET /posts
+// GetPosts handles GET /posts
+// 
+// if query param q present: search posts by q
+// if query param topic present: search by topic id
 // 
 // Response:
-//   200 OK - JSON array of posts
+//   200 OK - post object
+// 	 400 Bad request - invalid query params
 //   500 Internal Server Error - database failure
 //
 // Authentication: not required
-func GetLatestPosts(w http.ResponseWriter, r *http.Request) {
-	posts, err := models.GetLatestPosts()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+func GetPosts(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+
+	q, hasQ := query["q"]
+	topicID := query.Get("topic")
+
+	// if query param q is present and empty
+	if hasQ && strings.TrimSpace(q[0]) == "" {
+		http.Error(w, "Search query cannot be empty", http.StatusBadRequest)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(posts)
-}
+	var (
+		posts []models.Post
+		err   error
+	)
 
-// GetPostsByTopicID handles GET /posts/topic/{topicID}
-// 
-// Response:
-//   200 OK - JSON array of posts
-// 	 400 Bad request - invalid post ID 
-//   500 Internal Server Error - database failure
-//
-// Authentication: not required
-func GetPostsByTopicID(w http.ResponseWriter, r *http.Request) {
-	idStr := chi.URLParam(r, "topicID")
-	topicID, err := strconv.Atoi(idStr)
-	if err != nil || topicID <= 0 {
-		http.Error(w, "Invalid topic ID", http.StatusBadRequest)
-		return
+	switch {
+	// search post by keyword if query param not empty
+	case hasQ:
+		posts, err = models.SearchPostByKeyword(q[0])
+
+	// return by topic if topicID not empty
+	case topicID != "":
+		id, convErr := strconv.Atoi(topicID)
+		if convErr != nil || id <= 0 {
+			http.Error(w, "Invalid topic ID", http.StatusBadRequest)
+			return
+		}
+		posts, err = models.GetPostsByTopicID(id)
+
+	// by default return latest posts
+	default:
+		posts, err = models.GetLatestPosts()
 	}
 
-	posts, err := models.GetPostsByTopicID(topicID)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Failed to fetch posts", http.StatusInternalServerError)
 		return
 	}
 

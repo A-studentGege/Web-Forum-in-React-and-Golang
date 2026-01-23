@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   styled,
   Box,
@@ -29,6 +32,16 @@ const btnStyle = {
 
 export default function NavBar() {
   const { user, isAuthenticated, logout } = useAuth();
+  const [keyword, setKeyword] = useState("");
+  const navigate = useNavigate();
+
+  // handles keyword searching
+  const handleSearch = () => {
+    const q = keyword.trim();
+    if (!q) return;
+
+    navigate(`/posts?q=${encodeURIComponent(q)}`);
+  };
 
   return (
     <Box
@@ -49,10 +62,21 @@ export default function NavBar() {
 
           <Divider orientation="vertical" flexItem />
 
+          {/* search field */}
           <Search>
-            <InputBase placeholder="Find everything you like" fullWidth />
+            <InputBase
+              placeholder="Find everything you like"
+              fullWidth
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSearch();
+                }
+              }}
+            />
 
-            <IconButton aria-label="search">
+            <IconButton aria-label="search" onClick={handleSearch}>
               <SearchIcon />
             </IconButton>
           </Search>

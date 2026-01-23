@@ -42,11 +42,10 @@ func SetupRoutes() *chi.Mux {
 	})
 
 	r.Route("/posts", func (r chi.Router){
-		r.Get("/", handlers.GetLatestPosts) // get all posts order by time
+		r.Get("/", handlers.GetPosts)
 		r.Get("/{id}", handlers.GetPostByID) // get post details by post id
 		r.Get("/{id}/comments", handlers.GetCommentsByPostID) // get a post's comments by post id 
-		r.Get("/topic/{topicID}", handlers.GetPostsByTopicID) // get posts filtered by topic
-
+		
 		r.Post("/", auth.AuthMiddleware(handlers.CreatePost)) // create a new post
 		r.Post("/{id}/comments", auth.AuthMiddleware(handlers.CreateComment)) // create a comment under the post
 		

@@ -35,7 +35,7 @@ export async function fetchTopicById(topicId: string): Promise<Topic> {
  * @returns A list of posts belonging to a specific topic
  */
 export async function fetchPostsByTopicId(topicId: string): Promise<Post[]> {
-  const res = await fetch(`${BASE_URL}/posts/topic/${topicId}`);
+  const res = await fetch(`${BASE_URL}/posts?topic=${topicId}`);
   if (!res.ok) throw new Error("Failed to fetch posts by topic");
   return res.json();
 }

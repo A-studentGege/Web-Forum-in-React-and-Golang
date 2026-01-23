@@ -220,3 +220,41 @@ func UpdatePost(authorID int, postID int, title string, content string) error {
 
 	return nil
 }
+
+// SearchPostByKeyword returns a list of posts that contain the keyword
+// in their title/content
+func SearchPostByKeyword(keyword string) ([]Post, error){
+	rows, err := db.DB.Query(
+		`SELECT p.id, p.title, p.content, t.name as topic, t.color, u.username, u.id, p.created_at 
+		FROM posts p
+		JOIN users u ON p.author_id = u.id
+	 	JOIN topics t ON p.topic_id = t.id
+		WHERE p.title ILIKE '%' || $1 || '%'
+		    OR p.content ILIKE '%' || $1 || '%'`,
+		keyword,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []Post
+	for rows.Next() {
+		var p Post
+		if err := rows.Scan(&p.ID, 
+							&p.Title, 
+							&p.Content,
+							&p.Topic,
+							&p.TopicColor,
+							&p.Author, 
+							&p.AuthorID, 
+							&p.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		posts = append(posts, p)
+	}
+
+	return posts, nil
+}

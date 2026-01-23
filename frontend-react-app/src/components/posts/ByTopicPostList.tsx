@@ -10,7 +10,7 @@ export default function ByTopicPostList() {
 
   // show loading page when components not ready
   if (loading) {
-    return <LoadingState />;
+    return <LoadingState message="receiving posts about the topic..." />;
   }
 
   return <PostList posts={posts} title={topicName || "By topic"} />;

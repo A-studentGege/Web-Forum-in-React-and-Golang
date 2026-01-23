@@ -100,3 +100,16 @@ export async function updatePost(postId : string, token : string, payload: {
   });
   if (!res.ok) throw new Error("Failed to update post"); 
 }
+
+/**
+ * Retrieve a list of posts that contain the interested keyword
+ * 
+ * @param keyword - keyword for searching posts
+ * @returns a list of posts that contain keyword in their title/content
+ */
+export async function searchPost(keyword : string): Promise<Post[]> {
+  const res = await await fetch(`${BASE_URL}/posts?q=${keyword}`);
+  if (!res.ok) throw new Error("Failed to search post by keyword"); 
+
+  return res.json();
+}

@@ -7,6 +7,7 @@ import ViewPostPage from "@/pages/ViewPostPage";
 import CreatePostPage from "@/pages/CreatePostPage";
 import LoginPage from "@/pages/LoginPage";
 import ViewPostByTopicPage from "@/pages/ViewPostByTopicPage";
+import ViewPostByKeywordPage from "./pages/ViewPostByKeywordPage";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 const theme = createTheme({
@@ -30,6 +31,7 @@ function App() {
             {/* protected routes, user must log in to access */}
             <Route element={<ProtectedRoute />}>
               <Route path="/" element={<MainPage />} />
+              <Route path="/posts" element={<ViewPostByKeywordPage />} />
               <Route path="/post/:postID" element={<ViewPostPage />} />
               <Route path="/topic/:topicID" element={<ViewPostByTopicPage />} />
               <Route path="/create" element={<CreatePostPage />} />
